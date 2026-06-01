@@ -17,7 +17,7 @@ namespace CableManagementStudio.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(Models.RegisterRequest request)
+        public async Task<IActionResult> Register(RegisterRequest request)
         {
             var existingUser = await _context.Users
                 .FirstOrDefaultAsync(x => x.Email == request.Email);
@@ -30,8 +30,9 @@ namespace CableManagementStudio.Controllers
                 FullName = request.FullName,
                 UserName = request.UserName,
                 Email = request.Email,
-                Role = request.Role,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
+                PasswordHash = request.Password,
+                Role = "Employee",
+                IsActive = true
             };
 
             _context.Users.Add(user);
