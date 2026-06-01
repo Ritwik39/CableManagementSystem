@@ -2,7 +2,7 @@
 using CableManagementStudio.Models;
 using System.Collections.Generic;
 
-namespace Cable_Management_Systems.Data
+namespace CableManagementStudio.Data
 {
     public class ApplicationDbContext : DbContext
     {
@@ -13,7 +13,6 @@ namespace Cable_Management_Systems.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Customer> Customers { get; set; }
-        public DbSet<Employee> Employees { get; set; }
         public DbSet<Package> Packages { get; set; }
     }
 }
