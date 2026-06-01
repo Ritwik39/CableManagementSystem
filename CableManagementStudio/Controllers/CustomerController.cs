@@ -1,13 +1,15 @@
-﻿using Cable_Management_Systems.Models;
+﻿using CableManagementStudio.Data;
+using CableManagementStudio.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
 public class CustomerController : ControllerBase
 {
-    private readonly CableDbContext _context;
+    private readonly ApplicationDbContext _context;
 
-    public CustomerController(CableDbContext context)
+    public CustomerController(ApplicationDbContext context)
     {
         _context = context;
     }

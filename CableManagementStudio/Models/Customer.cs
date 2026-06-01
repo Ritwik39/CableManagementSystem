@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Cable_Management_Systems.Models
+namespace CableManagementStudio.Models
 {
     public class Customer
     {
