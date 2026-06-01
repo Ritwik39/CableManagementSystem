@@ -1,0 +1,6 @@
+@CableManagementStudio_HostAddress = http://localhost:5229
+
+GET {{CableManagementStudio_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
