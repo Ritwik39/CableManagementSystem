@@ -37,7 +37,7 @@ namespace CableManagementStudio.Controllers
                 UserName = request.UserName,
                 Email = request.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                Role = request.Role,
+                Role = "Customer",
                 IsActive = true
             };
 

@@ -4,6 +4,7 @@ using CableManagementStudio.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CableManagementStudio.Controllers
 {
@@ -120,6 +121,44 @@ namespace CableManagementStudio.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Customer deleted successfully.");
+        }
+
+        [Authorize(Roles = "Customer")]
+        [HttpGet("my-profile")]
+        public async Task<IActionResult> MyProfile()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim))
+                return Unauthorized();
+
+            int userId = int.Parse(userIdClaim);
+
+            var customer = await _context.Customers
+                .Include(c => c.Package)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (customer == null)
+            {
+                return NotFound(new
+                {
+                    Message = "Customer profile not created yet. Please contact administrator."
+                });
+            }
+
+            return Ok(new
+            {
+                customer.CustomerId,
+                customer.Name,
+                customer.Mobile,
+                customer.Address,
+                customer.ConnectionNumber,
+                customer.IsActive,
+
+                Package = customer.Package?.PackageName,
+                Price = customer.Package?.Price,
+                Speed = customer.Package?.SpeedMbps
+            });
         }
     }
 }
