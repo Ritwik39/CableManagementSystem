@@ -36,7 +36,7 @@ namespace CableManagementStudio.Controllers
             return Ok(customer);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Employee")]
         [HttpPost]
         public async Task<IActionResult> Create(Customer customer)
         {
@@ -46,7 +46,7 @@ namespace CableManagementStudio.Controllers
             return Ok(customer);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Employee")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Customer customer)
         {

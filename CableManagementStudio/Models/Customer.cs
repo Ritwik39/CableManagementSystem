@@ -8,7 +8,7 @@ namespace CableManagementStudio.Models
 
         public int UserId { get; set; }
 
-        public User User { get; set; }
+        public User? User { get; set; }
 
         [Required]
         public string Name { get; set; } = string.Empty;

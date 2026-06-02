@@ -36,8 +36,8 @@ namespace CableManagementStudio.Controllers
                 FullName = request.FullName,
                 UserName = request.UserName,
                 Email = request.Email,
-                PasswordHash = request.Password,
-                Role = "Employee",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                Role = request.Role,
                 IsActive = true
             };
 
@@ -50,14 +50,29 @@ namespace CableManagementStudio.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
+            //    var user = await _context.Users
+            //        .FirstOrDefaultAsync(x => x.Email == request.UserName);
+
+            //    if (user == null)
+            //        return Unauthorized("Invalid Username or password.");
+
+            //    if (user.PasswordHash != request.Password)
+            //        return Unauthorized("Invalid Username or password.");
+
+            //changing  in login method to test roles
             var user = await _context.Users
-                .FirstOrDefaultAsync(x => x.Email == request.Email);
+        .FirstOrDefaultAsync(x => x.UserName == request.UserName);
 
             if (user == null)
-                return Unauthorized("Invalid email or password.");
+                return Unauthorized("Invalid username or password.");
 
-            if (user.PasswordHash != request.Password)
-                return Unauthorized("Invalid email or password.");
+            bool validPassword = BCrypt.Net.BCrypt.Verify(
+                request.Password,
+                user.PasswordHash);
+
+            if (!validPassword)
+                return Unauthorized("Invalid username or password.");
+
 
             var claims = new[]
             {
