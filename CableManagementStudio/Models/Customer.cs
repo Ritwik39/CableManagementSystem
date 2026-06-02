@@ -10,6 +10,10 @@ namespace CableManagementStudio.Models
 
         public User? User { get; set; }
 
+        public int PackageId { get; set; }
+
+        public Package? Package { get; set; }
+
         [Required]
         public string Name { get; set; } = string.Empty;
 

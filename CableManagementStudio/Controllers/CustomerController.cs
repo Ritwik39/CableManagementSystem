@@ -1,4 +1,5 @@
 ﻿using CableManagementStudio.Data;
+using CableManagementStudio.DTOs.Customer;
 using CableManagementStudio.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -36,14 +37,61 @@ namespace CableManagementStudio.Controllers
             return Ok(customer);
         }
 
+        //[Authorize(Roles = "Admin,Employee")]
+        //[HttpPost]
+        //public async Task<IActionResult> Create(Customer customer)
+        //{
+        //    _context.Customers.Add(customer);
+        //    await _context.SaveChangesAsync();
+
+        //    return Ok(customer);
+        //}
         [Authorize(Roles = "Admin,Employee")]
         [HttpPost]
-        public async Task<IActionResult> Create(Customer customer)
+        public async Task<IActionResult> Create(CreateCustomerRequest request)
         {
+            // Check existing username
+            var existingUser = await _context.Users
+                .FirstOrDefaultAsync(x => x.UserName == request.UserName);
+
+            if (existingUser != null)
+                return BadRequest("Username already exists.");
+
+            // Create login account
+            var user = new User
+            {
+                FullName = request.FullName,
+                UserName = request.UserName,
+                Email = request.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                Role = "Customer",
+                IsActive = true
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            // Create customer record
+            var customer = new Customer
+            {
+                UserId = user.UserId,
+                Name = request.FullName,
+                Mobile = request.Mobile,
+                Address = request.Address,
+                ConnectionNumber = request.ConnectionNumber,
+                PackageId = request.PackageId,
+                IsActive = true
+            };
+
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
-            return Ok(customer);
+            return Ok(new
+            {
+                Message = "Customer created successfully.",
+                CustomerId = customer.CustomerId,
+                UserId = user.UserId
+            });
         }
 
         [Authorize(Roles = "Admin,Employee")]
