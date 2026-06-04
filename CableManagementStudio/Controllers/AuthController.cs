@@ -1,5 +1,6 @@
 ﻿using CableManagementStudio.Data;
 using CableManagementStudio.Models;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -23,7 +24,7 @@ namespace CableManagementStudio.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequest request)
+        public async Task<IActionResult> Register(UserRegisterRequest request)
         {
             var existingUser = await _context.Users
                 .FirstOrDefaultAsync(x => x.Email == request.Email);
@@ -48,20 +49,10 @@ namespace CableManagementStudio.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest request)
+        public async Task<IActionResult> Login(UserLoginRequest request)
         {
-            //    var user = await _context.Users
-            //        .FirstOrDefaultAsync(x => x.Email == request.UserName);
-
-            //    if (user == null)
-            //        return Unauthorized("Invalid Username or password.");
-
-            //    if (user.PasswordHash != request.Password)
-            //        return Unauthorized("Invalid Username or password.");
-
-            //changing  in login method to test roles
             var user = await _context.Users
-        .FirstOrDefaultAsync(x => x.UserName == request.UserName);
+                .FirstOrDefaultAsync(x => x.UserName == request.UserName);
 
             if (user == null)
                 return Unauthorized("Invalid username or password.");
@@ -72,7 +63,6 @@ namespace CableManagementStudio.Controllers
 
             if (!validPassword)
                 return Unauthorized("Invalid username or password.");
-
 
             var claims = new[]
             {
@@ -108,6 +98,34 @@ namespace CableManagementStudio.Controllers
                 user.Email,
                 user.Role
             });
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(x => x.Email == request.Email);
+
+            if (user == null)
+                return BadRequest("Email not found.");
+
+            return Ok("Email verified. You can reset your password.");
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(x => x.Email == request.Email);
+
+            if (user == null)
+                return BadRequest("Email not found.");
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Password reset successfully.");
         }
     }
 }
