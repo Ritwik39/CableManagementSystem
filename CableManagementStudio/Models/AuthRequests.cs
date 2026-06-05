@@ -24,4 +24,10 @@ namespace CableManagementStudio.Models
         public string Email { get; set; }
         public string NewPassword { get; set; }
     }
+    public class ChangePasswordRequest
+    {
+        public string CurrentPassword { get; set; }
+        public string NewPassword { get; set; }
+    }
+
 }

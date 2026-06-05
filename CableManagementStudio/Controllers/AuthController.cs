@@ -1,8 +1,9 @@
 ﻿using CableManagementStudio.Data;
 using CableManagementStudio.Models;
-using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using CableManagementStudio.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -24,13 +25,13 @@ namespace CableManagementStudio.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserRegisterRequest request)
+        public async Task<IActionResult> Register(RegisterRequest request)
         {
             var existingUser = await _context.Users
-                .FirstOrDefaultAsync(x => x.Email == request.Email);
+                .FirstOrDefaultAsync(x => x.Email == request.Email || x.UserName == request.UserName);
 
             if (existingUser != null)
-                return BadRequest("Email already exists.");
+                return BadRequest("Email or username already exists.");
 
             var user = new User
             {
@@ -49,7 +50,7 @@ namespace CableManagementStudio.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(UserLoginRequest request)
+        public async Task<IActionResult> Login(LoginRequest request)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(x => x.UserName == request.UserName);
@@ -57,9 +58,7 @@ namespace CableManagementStudio.Controllers
             if (user == null)
                 return Unauthorized("Invalid username or password.");
 
-            bool validPassword = BCrypt.Net.BCrypt.Verify(
-                request.Password,
-                user.PasswordHash);
+            bool validPassword = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
 
             if (!validPassword)
                 return Unauthorized("Invalid username or password.");
@@ -75,9 +74,7 @@ namespace CableManagementStudio.Controllers
             var key = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
 
-            var credentials = new SigningCredentials(
-                key,
-                SecurityAlgorithms.HmacSha256);
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
@@ -109,7 +106,11 @@ namespace CableManagementStudio.Controllers
             if (user == null)
                 return BadRequest("Email not found.");
 
-            return Ok("Email verified. You can reset your password.");
+            return Ok(new
+            {
+                message = "Email verified. Please call reset-password API to set a new password.",
+                email = user.Email
+            });
         }
 
         [HttpPost("reset-password")]
@@ -126,6 +127,35 @@ namespace CableManagementStudio.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Password reset successfully.");
+        }
+
+        [Authorize]
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
+        {
+            var userName = User.Identity?.Name;
+
+            if (string.IsNullOrEmpty(userName))
+                return Unauthorized("Invalid token.");
+
+            var user = await _context.Users
+                .FirstOrDefaultAsync(x => x.UserName == userName);
+
+            if (user == null)
+                return Unauthorized("User not found.");
+
+            bool validPassword = BCrypt.Net.BCrypt.Verify(
+                request.CurrentPassword,
+                user.PasswordHash);
+
+            if (!validPassword)
+                return BadRequest("Current password is incorrect.");
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Password changed successfully.");
         }
     }
 }
