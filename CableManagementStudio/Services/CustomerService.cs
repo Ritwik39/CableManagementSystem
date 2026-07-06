@@ -2,16 +2,23 @@
 using CableManagementStudio.Repositories;
 using CableManagementStudio.Repositories.Interfaces;
 using CableManagementStudio.Services.Interfaces;
+using CableManagementStudio.DTOs.Customer;
+using System;
+
 
 namespace CableManagementStudio.Services
 {
     public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository _customerRepository;
+        private readonly IUserRepository _userRepository;
 
-        public CustomerService(ICustomerRepository customerRepository)
+        public CustomerService(
+     ICustomerRepository customerRepository,
+     IUserRepository userRepository)
         {
             _customerRepository = customerRepository;
+            _userRepository = userRepository;
         }
 
         public Task<List<Customer>> GetAllAsync()
@@ -37,6 +44,52 @@ namespace CableManagementStudio.Services
         public Task<bool> DeleteAsync(int id)
         {
             return _customerRepository.DeleteAsync(id);
+        }
+
+        public async Task<CreateCustomerResponse> RegisterCustomerAsync(CreateCustomerRequest request)
+        {
+            // Check existing username
+            var existingUser = await _userRepository.GetByUserNameAsync(request.UserName);
+
+            if (existingUser != null)
+            {
+                throw new Exception("Username already exists.");
+            }
+
+            // Create User
+            var user = new User
+            {
+                FullName = request.FullName,
+                UserName = request.UserName,
+                Email = request.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                Role = "Customer",
+                IsActive = true
+            };
+
+            await _userRepository.CreateAsync(user);
+
+            // Create Customer
+            var customer = new Customer
+            {
+                UserId = user.UserId,
+                Name = request.FullName,
+                Mobile = request.Mobile,
+                Address = request.Address,
+                ConnectionNumber = request.ConnectionNumber,
+                PackageId = request.PackageId,
+                IsActive = true
+            };
+
+            await _customerRepository.CreateAsync(customer);
+
+            // Response
+            return new CreateCustomerResponse
+            {
+                Message = "Customer created successfully.",
+                CustomerId = customer.CustomerId,
+                UserId = user.UserId
+            };
         }
     }
 }

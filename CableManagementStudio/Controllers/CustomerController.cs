@@ -1,6 +1,8 @@
 ﻿using CableManagementStudio.Data;
 using CableManagementStudio.DTOs.Customer;
 using CableManagementStudio.Models;
+using CableManagementStudio.Services;
+using CableManagementStudio.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,25 +14,39 @@ namespace CableManagementStudio.Controllers
     [Route("api/[controller]")]
     public class CustomerController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
+        //private readonly IEmailService _emailService;
 
-        public CustomerController(ApplicationDbContext context)
+        private readonly ApplicationDbContext _context;
+        private readonly ICustomerService _customerService;
+        private readonly IEmailService _emailService;
+
+        public CustomerController(
+            ApplicationDbContext context,
+            ICustomerService customerService,
+            IEmailService emailService)
         {
             _context = context;
+            _customerService = customerService;
+            _emailService = emailService;
         }
 
         [Authorize(Roles = "Admin,Employee")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.Customers.ToListAsync());
+            //throw new Exception("Testing Global Exception Middleware"); // for testing Middleware   
+
+
+            var customers = await _customerService.GetAllAsync();
+            return Ok(customers);
         }
 
         [Authorize(Roles = "Admin,Employee")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = await _customerService.GetByIdAsync(id);
 
             if (customer == null)
                 return NotFound("Customer not found.");
@@ -50,50 +66,55 @@ namespace CableManagementStudio.Controllers
         [Authorize(Roles = "Admin,Employee")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateCustomerRequest request)
-        {
-            // Check existing username
-            var existingUser = await _context.Users
-                .FirstOrDefaultAsync(x => x.UserName == request.UserName);
-
-            if (existingUser != null)
-                return BadRequest("Username already exists.");
-
-            // Create login account
-            var user = new User
             {
-                FullName = request.FullName,
-                UserName = request.UserName,
-                Email = request.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                Role = "Customer",
-                IsActive = true
-            };
+                var result = await _customerService.RegisterCustomerAsync(request);
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+                return Ok(result);
+            }
 
-            // Create customer record
-            var customer = new Customer
-            {
-                UserId = user.UserId,
-                Name = request.FullName,
-                Mobile = request.Mobile,
-                Address = request.Address,
-                ConnectionNumber = request.ConnectionNumber,
-                PackageId = request.PackageId,
-                IsActive = true
-            };
+            //// Check existing username
+            //var existingUser = await _context.Users
+            //    .FirstOrDefaultAsync(x => x.UserName == request.UserName);
 
-            _context.Customers.Add(customer);
-            await _context.SaveChangesAsync();
+            //if (existingUser != null)
+            //    return BadRequest("Username already exists.");
 
-            return Ok(new
-            {
-                Message = "Customer created successfully.",
-                CustomerId = customer.CustomerId,
-                UserId = user.UserId
-            });
-        }
+            //// Create login account
+            //var user = new User
+            //{
+            //    FullName = request.FullName,
+            //    UserName = request.UserName,
+            //    Email = request.Email,
+            //    PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+            //    Role = "Customer",
+            //    IsActive = true
+            //};
+
+            //_context.Users.Add(user);
+            //await _context.SaveChangesAsync();
+
+            //// Create customer record
+            //var customer = new Customer
+            //{
+            //    UserId = user.UserId,
+            //    Name = request.FullName,
+            //    Mobile = request.Mobile,
+            //    Address = request.Address,
+            //    ConnectionNumber = request.ConnectionNumber,
+            //    PackageId = request.PackageId,
+            //    IsActive = true
+            //};
+
+            //_context.Customers.Add(customer);
+            //await _context.SaveChangesAsync();
+
+            //return Ok(new
+            //{
+            //    Message = "Customer created successfully.",
+            //    CustomerId = customer.CustomerId,
+            //    UserId = user.UserId
+            //});
+        
 
         [Authorize(Roles = "Admin,Employee")]
         [HttpPut("{id}")]
