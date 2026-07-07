@@ -1,8 +1,7 @@
-﻿using CableManagementStudio.Data;
-using CableManagementStudio.Models;
+﻿using CableManagementStudio.Models;
+using CableManagementStudio.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CableManagementStudio.Controllers
 {
@@ -10,25 +9,27 @@ namespace CableManagementStudio.Controllers
     [Route("api/[controller]")]
     public class PackageController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IPackageService _packageService;
 
-        public PackageController(ApplicationDbContext context)
+        public PackageController(IPackageService packageService)
         {
-            _context = context;
+            _packageService = packageService;
         }
 
         [Authorize(Roles = "Admin,Employee")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.Packages.ToListAsync());
+            var packages = await _packageService.GetAllAsync();
+
+            return Ok(packages);
         }
 
         [Authorize(Roles = "Admin,Employee")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var package = await _context.Packages.FindAsync(id);
+            var package = await _packageService.GetByIdAsync(id);
 
             if (package == null)
                 return NotFound("Package not found.");
@@ -40,10 +41,9 @@ namespace CableManagementStudio.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Package package)
         {
-            _context.Packages.Add(package);
-            await _context.SaveChangesAsync();
+            var createdPackage = await _packageService.CreateAsync(package);
 
-            return Ok(package);
+            return Ok(createdPackage);
         }
 
         [Authorize(Roles = "Admin")]
@@ -53,23 +53,22 @@ namespace CableManagementStudio.Controllers
             if (id != package.PackageId)
                 return BadRequest("Package ID mismatch.");
 
-            _context.Entry(package).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            var updatedPackage = await _packageService.UpdateAsync(id, package);
 
-            return Ok(package);
+            if (updatedPackage == null)
+                return NotFound("Package not found.");
+
+            return Ok(updatedPackage);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var package = await _context.Packages.FindAsync(id);
+            var deleted = await _packageService.DeleteAsync(id);
 
-            if (package == null)
+            if (!deleted)
                 return NotFound("Package not found.");
-
-            _context.Packages.Remove(package);
-            await _context.SaveChangesAsync();
 
             return Ok("Package deleted successfully.");
         }
