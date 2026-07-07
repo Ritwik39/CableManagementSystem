@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -42,6 +42,9 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<IPackageRepository, PackageRepository>();
+
+builder.Services.AddScoped<IPackageService, PackageService>();
 
 builder.Services.AddSwaggerGen(options =>
 {
