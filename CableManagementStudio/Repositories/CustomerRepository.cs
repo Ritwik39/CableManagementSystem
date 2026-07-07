@@ -1,4 +1,5 @@
 ﻿using CableManagementStudio.Data;
+using CableManagementStudio.DTOs.Customer;
 using CableManagementStudio.Models;
 using CableManagementStudio.Repositories.Interfaces;
 using CableManagementStudio.Services.Interfaces;
@@ -60,6 +61,27 @@ namespace CableManagementStudio.Repositories
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<CustomerProfileResponse?> GetProfileAsync(int userId)
+        {
+            return await _context.Customers
+                .Include(c => c.Package)
+                .Where(c => c.UserId == userId)
+                .Select(c => new CustomerProfileResponse
+                {
+                    CustomerId = c.CustomerId,
+                    Name = c.Name,
+                    Mobile = c.Mobile,
+                    Address = c.Address,
+                    ConnectionNumber = c.ConnectionNumber,
+                    IsActive = c.IsActive,
+
+                    PackageName = c.Package != null ? c.Package.PackageName : null,
+                    Price = c.Package != null ? c.Package.Price : null,
+                    SpeedMbps = c.Package != null ? c.Package.SpeedMbps : null
+                })
+                .FirstOrDefaultAsync();
         }
     }
 }

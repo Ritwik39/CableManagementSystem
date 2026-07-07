@@ -1,4 +1,5 @@
-﻿using CableManagementStudio.Models;
+﻿using CableManagementStudio.DTOs.Customer;
+using CableManagementStudio.Models;
 
 namespace CableManagementStudio.Repositories.Interfaces
 {
@@ -9,5 +10,6 @@ namespace CableManagementStudio.Repositories.Interfaces
         Task<Customer> CreateAsync(Customer customer);
         Task<Customer?> UpdateAsync(int id, Customer customer);
         Task<bool> DeleteAsync(int id);
+        Task<CustomerProfileResponse?> GetProfileAsync(int userId);
     }
 }

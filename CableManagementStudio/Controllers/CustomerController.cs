@@ -17,16 +17,15 @@ namespace CableManagementStudio.Controllers
         //private readonly ApplicationDbContext _context;
         //private readonly IEmailService _emailService;
 
-        private readonly ApplicationDbContext _context;
+       // private readonly ApplicationDbContext _context;
         private readonly ICustomerService _customerService;
         private readonly IEmailService _emailService;
 
         public CustomerController(
-            ApplicationDbContext context,
             ICustomerService customerService,
             IEmailService emailService)
         {
-            _context = context;
+           // _context = context;
             _customerService = customerService;
             _emailService = emailService;
         }
@@ -120,26 +119,32 @@ namespace CableManagementStudio.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Customer customer)
         {
-            if (id != customer.CustomerId)
-                return BadRequest("Customer ID mismatch.");
+            var updateCustomer = await _customerService.UpdateAsync(id, customer); // moved to the service layer.
 
-            _context.Entry(customer).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            if(updateCustomer == null)
+            
+                return NotFound("Customer Not found");
 
-            return Ok(customer);
+            return Ok(updateCustomer);
+            
+
+            //if (id != customer.CustomerId)
+            //    return BadRequest("Customer ID mismatch.");
+
+            //_context.Entry(customer).State = EntityState.Modified;
+            //await _context.SaveChangesAsync();
+
+            //return Ok(customer);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var customer = await _context.Customers.FindAsync(id);
+            var deleted = await _customerService.DeleteAsync(id);
 
-            if (customer == null)
+            if (!deleted)
                 return NotFound("Customer not found.");
-
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
 
             return Ok("Customer deleted successfully.");
         }
@@ -155,11 +160,9 @@ namespace CableManagementStudio.Controllers
 
             int userId = int.Parse(userIdClaim);
 
-            var customer = await _context.Customers
-                .Include(c => c.Package)
-                .FirstOrDefaultAsync(c => c.UserId == userId);
+            var profile = await _customerService.GetProfileAsync(userId);
 
-            if (customer == null)
+            if (profile == null)
             {
                 return NotFound(new
                 {
@@ -167,19 +170,7 @@ namespace CableManagementStudio.Controllers
                 });
             }
 
-            return Ok(new
-            {
-                customer.CustomerId,
-                customer.Name,
-                customer.Mobile,
-                customer.Address,
-                customer.ConnectionNumber,
-                customer.IsActive,
-
-                Package = customer.Package?.PackageName,
-                Price = customer.Package?.Price,
-                Speed = customer.Package?.SpeedMbps
-            });
+            return Ok(profile);
         }
     }
 }

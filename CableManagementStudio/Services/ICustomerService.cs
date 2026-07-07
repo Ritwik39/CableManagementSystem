@@ -17,5 +17,6 @@ namespace CableManagementStudio.Services.Interfaces
 
         Task<CreateCustomerResponse> RegisterCustomerAsync(CreateCustomerRequest request);
 
+        Task<CustomerProfileResponse?> GetProfileAsync(int userId);
     }
 }

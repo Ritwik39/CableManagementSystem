@@ -46,6 +46,11 @@ namespace CableManagementStudio.Services
             return _customerRepository.DeleteAsync(id);
         }
 
+        public Task<CustomerProfileResponse?> GetProfileAsync(int userId)
+        {
+            return _customerRepository.GetProfileAsync(userId);
+        }
+
         public async Task<CreateCustomerResponse> RegisterCustomerAsync(CreateCustomerRequest request)
         {
             // Check existing username
