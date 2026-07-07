@@ -1,10 +1,11 @@
 ﻿using CableManagementStudio.Models;
 
-public interface IUserRepository
+namespace CableManagementStudio.Repositories.Interfaces
 {
-    Task<User?> GetByEmailAsync(string email);
-    Task<User?> GetByUserNameAsync(string userName);
-    Task<User?> GetByIdAsync(int id);
-    Task AddUserAsync(User user);
-    Task UpdateUserAsync(User user);
+    public interface IUserRepository
+    {
+        Task<User?> GetByUserNameAsync(string userName);
+
+        Task<User> CreateAsync(User user);
+    }
 }
