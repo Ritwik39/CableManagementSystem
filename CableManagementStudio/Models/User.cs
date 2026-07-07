@@ -24,5 +24,6 @@ namespace CableManagementStudio.Models
         public string? ResetToken { get; set; }
 
         public DateTime? ResetTokenExpiry { get; set; }
+        public object Name { get; internal set; }
     }
 }
