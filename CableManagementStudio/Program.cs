@@ -1,93 +1,90 @@
 using CableManagementStudio.Data;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using CableManagementStudio.Services;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
-using CableManagementStudio.Repositories;
-using CableManagementStudio.Repositories.Interfaces;
-using CableManagementStudio.Services.Interfaces;
+using CableManagementStudio.Extensions;
 using CableManagementStudio.Middleware;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+// =======================
+// Add MVC Controllers
+// =======================
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+// =======================
+// Database Configuration
+// =======================
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-        };
-    });
 
+// =======================
+// Register Dependency Injection
+// (Repositories, Services, EmailService, Singleton etc.)
+// =======================
+builder.Services.AddApplicationServices();
+
+
+// =======================
+// Configure JWT Authentication
+// =======================
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
+
+// =======================
+// Configure Role-Based Authorization
+// =======================
 builder.Services.AddAuthorization();
 
 
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddTransient<IEmailService, EmailService>();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddScoped<IPackageRepository, PackageRepository>();
-builder.Services.AddScoped<IPackageService, PackageService>();
-builder.Services.AddSingleton<IApplicationInfoService, ApplicationInfoService> ();
+// =======================
+// Configure Swagger + JWT Authorization
+// =======================
+builder.Services.AddSwaggerDocumentation();
 
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Enter JWT token only"
-    });
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[] {}
-        }
-    });
-});
 
 var app = builder.Build();
 
+
+// =======================
+// Enable Swagger in Development
+// =======================
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+
+// =======================
+// Global Exception Middleware
+// =======================
 app.UseMiddleware<ExceptionMiddleware>();
+
+
+// =======================
+// HTTPS Redirection
+// =======================
 app.UseHttpsRedirection();
 
+
+// =======================
+// Authentication Middleware
+// =======================
 app.UseAuthentication();
+
+
+// =======================
+// Authorization Middleware
+// =======================
 app.UseAuthorization();
 
+
+// =======================
+// Map Controllers
+// =======================
 app.MapControllers();
 
 app.Run();
