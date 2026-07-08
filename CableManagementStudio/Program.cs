@@ -40,11 +40,11 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IPackageRepository, PackageRepository>();
-
 builder.Services.AddScoped<IPackageService, PackageService>();
+builder.Services.AddSingleton<IApplicationInfoService, ApplicationInfoService> ();
 
 builder.Services.AddSwaggerGen(options =>
 {
