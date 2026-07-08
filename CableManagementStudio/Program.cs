@@ -1,6 +1,10 @@
 using CableManagementStudio.Data;
 using CableManagementStudio.Extensions;
 using CableManagementStudio.Middleware;
+using CableManagementStudio.Repositories;
+using CableManagementStudio.Repositories.Interfaces;
+using CableManagementStudio.Services;
+using CableManagementStudio.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +41,9 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 // Configure Role-Based Authorization
 // =======================
 builder.Services.AddAuthorization();
+
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 // =======================

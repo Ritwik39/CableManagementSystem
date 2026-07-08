@@ -1,7 +1,7 @@
-﻿using CableManagementStudio.Models;
+﻿using CableManagementStudio.Data;
+using CableManagementStudio.Models;
 using CableManagementStudio.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using CableManagementStudio.Data;
 
 namespace CableManagementStudio.Repositories
 {
@@ -16,18 +16,24 @@ namespace CableManagementStudio.Repositories
 
         public async Task<User?> GetByUserNameAsync(string userName)
         {
-            return await _context.Users
-                .FirstOrDefaultAsync(x => x.UserName == userName);
+            return await _context.Users.FirstOrDefaultAsync(x => x.UserName == userName);
         }
 
-        public async Task<User> CreateAsync(User user)
+        public async Task<User?> GetByEmailAsync(string email)
         {
-            _context.Users.Add(user);
-
-            await _context.SaveChangesAsync();
-
-            return user;
+            return await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
         }
 
+        public async Task AddUserAsync(User user)
+        {
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
     }
 }
