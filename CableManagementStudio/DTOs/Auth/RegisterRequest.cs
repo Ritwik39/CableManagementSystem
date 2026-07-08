@@ -1,4 +1,4 @@
-﻿namespace CableManagementStudio.DTO
+﻿namespace CableManagementStudio.DTOs.Auth
 {
     public class RegisterRequest
     {
