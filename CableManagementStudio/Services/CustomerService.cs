@@ -1,8 +1,9 @@
-﻿using CableManagementStudio.Models;
+﻿using AutoMapper;
+using CableManagementStudio.DTOs.Customer;
+using CableManagementStudio.Models;
 using CableManagementStudio.Repositories;
 using CableManagementStudio.Repositories.Interfaces;
 using CableManagementStudio.Services.Interfaces;
-using CableManagementStudio.DTOs.Customer;
 using System;
 
 
@@ -12,13 +13,18 @@ namespace CableManagementStudio.Services
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly IUserRepository _userRepository;
-
+        private readonly ILogger<CustomerService> _logger;
+        private readonly IMapper _mapper;
         public CustomerService(
      ICustomerRepository customerRepository,
-     IUserRepository userRepository)
+     IUserRepository userRepository,
+     ILogger <CustomerService> logger,
+     IMapper mapper)
         {
             _customerRepository = customerRepository;
             _userRepository = userRepository;
+            _logger = logger;
+            _mapper = mapper;
         }
 
         public Task<List<Customer>> GetAllAsync()
@@ -53,40 +59,43 @@ namespace CableManagementStudio.Services
 
         public async Task<CreateCustomerResponse> RegisterCustomerAsync(CreateCustomerRequest request)
         {
+            _logger.LogInformation(
+                "Starting customer registration for username: {UserName}",
+                request.UserName);
+
             // Check existing username
             var existingUser = await _userRepository.GetByUserNameAsync(request.UserName);
 
             if (existingUser != null)
             {
+                _logger.LogWarning(
+                    "Registration failed. Username already exists: {UserName}",
+                    request.UserName);
+
                 throw new Exception("Username already exists.");
             }
 
             // Create User
-            var user = new User
-            {
-                FullName = request.FullName,
-                UserName = request.UserName,
-                Email = request.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                Role = "Customer",
-                IsActive = true
-            };
+            var user = _mapper.Map<User>(request);
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            user.Role = "Customer";
+            user.IsActive = true;
 
             await _userRepository.CreateAsync(user);
 
             // Create Customer
-            var customer = new Customer
-            {
-                UserId = user.UserId,
-                Name = request.FullName,
-                Mobile = request.Mobile,
-                Address = request.Address,
-                ConnectionNumber = request.ConnectionNumber,
-                PackageId = request.PackageId,
-                IsActive = true
-            };
+            var customer = _mapper.Map<Customer>(request);
+
+            customer.UserId = user.UserId;
+            customer.IsActive = true;
 
             await _customerRepository.CreateAsync(customer);
+
+            _logger.LogInformation(
+                "Customer created successfully. CustomerId: {CustomerId}, UserId: {UserId}",
+                customer.CustomerId,
+                user.UserId);
 
             // Response
             return new CreateCustomerResponse
