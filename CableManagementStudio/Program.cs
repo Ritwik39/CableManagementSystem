@@ -30,6 +30,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // =======================
 builder.Services.AddApplicationServices();
 
+//AutoMapper
+
+builder.Services.AddAutoMapper(typeof(Program));
+
 
 // =======================
 // Configure JWT Authentication
