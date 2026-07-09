@@ -1,11 +1,12 @@
-﻿using CableManagementStudio.Models;
+﻿using AutoMapper;
+using CableManagementStudio.DTOs.Auth;
+using CableManagementStudio.Models;
 using CableManagementStudio.Repositories.Interfaces;
 using CableManagementStudio.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using CableManagementStudio.DTOs.Auth;
 
 namespace CableManagementStudio.Services
 {
@@ -14,15 +15,17 @@ namespace CableManagementStudio.Services
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthService> _logger;
-
+        private readonly IMapper _mapper;
         public AuthService(
             IUserRepository userRepository,
             IConfiguration configuration,
-            ILogger<AuthService> logger)
+            ILogger<AuthService> logger,
+            IMapper mapper)
         {
             _userRepository = userRepository;
             _configuration = configuration;
             _logger = logger;
+            _mapper = mapper;
         }
 
         public async Task<string> RegisterAsync(RegisterRequest request)
@@ -53,15 +56,11 @@ namespace CableManagementStudio.Services
                 return "Username already exists";
             }
 
-            var user = new User
-            {
-                FullName = request.FullName,
-                UserName = request.UserName,
-                Email = request.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                Role = "Customer",
-                IsActive = true
-            };
+            var user = _mapper.Map<User>(request);
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            user.Role = "Customer";
+            user.IsActive = true;
 
             await _userRepository.AddUserAsync(user);
 
@@ -120,24 +119,52 @@ namespace CableManagementStudio.Services
 
         public async Task<string> ForgotPasswordAsync(ForgotPasswordRequest request)
         {
+            _logger.LogInformation(
+                "Forgot password request for email: {Email}",
+                request.Email);
+
             var user = await _userRepository.GetByEmailAsync(request.Email);
 
             if (user == null)
+            {
+                _logger.LogWarning(
+                    "Forgot password failed. Email not found: {Email}",
+                    request.Email);
+
                 return "Email not found.";
+            }
+
+            _logger.LogInformation(
+                "Forgot password verification successful for {Email}",
+                request.Email);
 
             return "Email verified. Please call reset-password API to set a new password.";
         }
 
         public async Task<string> ResetPasswordAsync(ResetPasswordRequest request)
         {
+            _logger.LogInformation(
+            "Reset password request for email: {Email}",
+             request.Email);
+
             var user = await _userRepository.GetByEmailAsync(request.Email);
 
             if (user == null)
+            {
+                _logger.LogWarning(
+                     "Reset password failed. Email not found: {Email}",
+                      request.Email);
                 return "Email not found.";
+            }
+               
 
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
 
             await _userRepository.UpdateUserAsync(user);
+
+            _logger.LogInformation(
+        "Password reset successfully for UserId: {UserId}",
+        user.UserId);
 
             return "Password reset successfully.";
         }
@@ -146,21 +173,41 @@ namespace CableManagementStudio.Services
             string userName,
             ChangePasswordRequest request)
         {
+            _logger.LogInformation(
+                "Change password request for username: {UserName}",
+                userName);
+
             var user = await _userRepository.GetByUserNameAsync(userName);
 
             if (user == null)
+            {
+                _logger.LogWarning(
+                    "Change password failed. User not found: {UserName}",
+                    userName);
+
                 return "User not found.";
+            }
 
             bool validPassword = BCrypt.Net.BCrypt.Verify(
                 request.CurrentPassword,
                 user.PasswordHash);
 
             if (!validPassword)
+            {
+                _logger.LogWarning(
+                    "Change password failed. Incorrect current password for {UserName}",
+                    userName);
+
                 return "Current password is incorrect.";
+            }
 
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
 
             await _userRepository.UpdateUserAsync(user);
+
+            _logger.LogInformation(
+                "Password changed successfully for UserId: {UserId}",
+                user.UserId);
 
             return "Password changed successfully.";
         }
