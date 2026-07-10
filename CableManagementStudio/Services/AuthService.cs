@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CableManagementStudio.Common;
 using CableManagementStudio.DTOs.Auth;
 using CableManagementStudio.Models;
 using CableManagementStudio.Repositories.Interfaces;
@@ -28,7 +29,7 @@ namespace CableManagementStudio.Services
             _mapper = mapper;
         }
 
-        public async Task<string> RegisterAsync(RegisterRequest request)
+        public async Task<ApiResponse<object>> RegisterAsync(RegisterRequest request)
         {
             _logger.LogInformation(
                 "Registration started for username: {UserName}",
@@ -42,7 +43,8 @@ namespace CableManagementStudio.Services
                     "Registration failed. Email already exists: {Email}",
                     request.Email);
 
-                return "Email already exists";
+                return ApiResponse<object>.FailureResponse(
+     "Email already exists");
             }
 
             var existingUserName = await _userRepository.GetByUserNameAsync(request.UserName);
@@ -53,7 +55,8 @@ namespace CableManagementStudio.Services
                     "Registration failed. Username already exists: {UserName}",
                     request.UserName);
 
-                return "Username already exists";
+                return ApiResponse<object>.FailureResponse(
+    "Username already exists");
             }
 
             var user = _mapper.Map<User>(request);
@@ -68,10 +71,12 @@ namespace CableManagementStudio.Services
                 "User registered successfully. UserId: {UserId}",
                 user.UserId);
 
-            return "User registered successfully";
+            return ApiResponse<object>.SuccessResponse(
+    null,
+    "User registered successfully");
         }
 
-        public async Task<LoginResponse?> LoginAsync(LoginRequest request)
+        public async Task<ApiResponse<LoginResponse>> LoginAsync(LoginRequest request)
         {
             _logger.LogInformation(
                 "Login attempt for username: {UserName}",
@@ -85,7 +90,8 @@ namespace CableManagementStudio.Services
                     "Login failed. User not found: {UserName}",
                     request.UserName);
 
-                return null;
+                return ApiResponse<LoginResponse>.FailureResponse(
+    "Invalid username or password.");
             }
 
             bool validPassword = BCrypt.Net.BCrypt.Verify(
@@ -98,26 +104,25 @@ namespace CableManagementStudio.Services
                     "Login failed. Invalid password for {UserName}",
                     request.UserName);
 
-                return null;
+                return ApiResponse<LoginResponse>.FailureResponse(
+     "Invalid username or password.");
             }
 
             _logger.LogInformation(
-                "Login successful. UserId: {UserId}",
-                user.UserId);
+     "Login successful. UserId: {UserId}",
+     user.UserId);
 
-            return new LoginResponse
-            {
-                Message = "Login successful",
-                Token = GenerateJwtToken(user),
-                UserId = user.UserId,
-                FullName = user.FullName,
-                UserName = user.UserName,
-                Email = user.Email,
-                Role = user.Role
-            };
+            var response = _mapper.Map<LoginResponse>(user);
+
+            response.Token = GenerateJwtToken(user);
+
+            return ApiResponse<LoginResponse>.SuccessResponse(
+                response,
+                "Login successful");
         }
 
-        public async Task<string> ForgotPasswordAsync(ForgotPasswordRequest request)
+        public async Task<ApiResponse<object>> ForgotPasswordAsync(
+    ForgotPasswordRequest request)
         {
             _logger.LogInformation(
                 "Forgot password request for email: {Email}",
@@ -131,17 +136,21 @@ namespace CableManagementStudio.Services
                     "Forgot password failed. Email not found: {Email}",
                     request.Email);
 
-                return "Email not found.";
+                return ApiResponse<object>.FailureResponse(
+     "Email not found.");
             }
 
             _logger.LogInformation(
                 "Forgot password verification successful for {Email}",
                 request.Email);
 
-            return "Email verified. Please call reset-password API to set a new password.";
+            return ApiResponse<object>.SuccessResponse(
+    null,
+    "Email verified. Please call reset-password API to set a new password.");
         }
 
-        public async Task<string> ResetPasswordAsync(ResetPasswordRequest request)
+        public async Task<ApiResponse<object>> ResetPasswordAsync(
+    ResetPasswordRequest request)
         {
             _logger.LogInformation(
             "Reset password request for email: {Email}",
@@ -154,7 +163,8 @@ namespace CableManagementStudio.Services
                 _logger.LogWarning(
                      "Reset password failed. Email not found: {Email}",
                       request.Email);
-                return "Email not found.";
+                return ApiResponse<object>.FailureResponse(
+    "Email not found.");
             }
                
 
@@ -166,12 +176,12 @@ namespace CableManagementStudio.Services
         "Password reset successfully for UserId: {UserId}",
         user.UserId);
 
-            return "Password reset successfully.";
+            return ApiResponse<object>.SuccessResponse(
+     null,
+     "Password reset successfully.");
         }
 
-        public async Task<string> ChangePasswordAsync(
-            string userName,
-            ChangePasswordRequest request)
+        public async Task<ApiResponse<object>> ChangePasswordAsync(string userName,ChangePasswordRequest request)
         {
             _logger.LogInformation(
                 "Change password request for username: {UserName}",
@@ -185,7 +195,8 @@ namespace CableManagementStudio.Services
                     "Change password failed. User not found: {UserName}",
                     userName);
 
-                return "User not found.";
+                return ApiResponse<object>.FailureResponse(
+    "User not found.");
             }
 
             bool validPassword = BCrypt.Net.BCrypt.Verify(
@@ -198,7 +209,8 @@ namespace CableManagementStudio.Services
                     "Change password failed. Incorrect current password for {UserName}",
                     userName);
 
-                return "Current password is incorrect.";
+                return ApiResponse<object>.FailureResponse(
+    "Current password is incorrect.");
             }
 
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
@@ -209,7 +221,9 @@ namespace CableManagementStudio.Services
                 "Password changed successfully for UserId: {UserId}",
                 user.UserId);
 
-            return "Password changed successfully.";
+            return ApiResponse<object>.SuccessResponse(
+     null,
+     "Password changed successfully.");
         }
 
         private string GenerateJwtToken(User user)

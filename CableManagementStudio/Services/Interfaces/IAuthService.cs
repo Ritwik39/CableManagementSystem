@@ -1,19 +1,20 @@
-﻿using CableManagementStudio.Models;
+﻿using CableManagementStudio.Common;
 using CableManagementStudio.DTOs.Auth;
+using CableManagementStudio.Models;
 
 namespace CableManagementStudio.Services.Interfaces
 {
     public interface IAuthService
     {
-        Task<string> RegisterAsync(RegisterRequest request);
+        Task<ApiResponse<object>> RegisterAsync(RegisterRequest request);
 
-        Task<LoginResponse?> LoginAsync(LoginRequest request);
+        Task<ApiResponse<LoginResponse>> LoginAsync(LoginRequest request);
 
-        Task<string> ForgotPasswordAsync(ForgotPasswordRequest request);
+        Task<ApiResponse<object>> ForgotPasswordAsync(ForgotPasswordRequest request);
 
-        Task<string> ResetPasswordAsync(ResetPasswordRequest request);
+        Task<ApiResponse<object>> ResetPasswordAsync(ResetPasswordRequest request);
 
-        Task<string> ChangePasswordAsync(
+        Task<ApiResponse<object>> ChangePasswordAsync(
             string userName,
             ChangePasswordRequest request);
     }
