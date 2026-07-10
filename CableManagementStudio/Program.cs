@@ -5,7 +5,10 @@ using CableManagementStudio.Repositories;
 using CableManagementStudio.Repositories.Interfaces;
 using CableManagementStudio.Services;
 using CableManagementStudio.Services.Interfaces;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using SharpGrip.FluentValidation.AutoValidation.Mvc;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,10 +34,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddApplicationServices();
 
 //AutoMapper
-
 builder.Services.AddAutoMapper(typeof(Program));
 
-// this is test
+// FluentValidation
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddFluentValidationAutoValidation();
 
 
 // =======================
@@ -48,8 +52,6 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 // =======================
 builder.Services.AddAuthorization();
 
-
-builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 // =======================
