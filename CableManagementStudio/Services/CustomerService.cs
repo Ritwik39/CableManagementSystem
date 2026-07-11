@@ -72,7 +72,7 @@ namespace CableManagementStudio.Services
                 IsActive = true
             };
 
-            await _userRepository.AddUserAsync(user);
+            await _userRepository.CreateAsync(user);
 
             // Create Customer
             var customer = new Customer

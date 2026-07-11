@@ -77,7 +77,6 @@ namespace CableManagementStudio.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("SpeedMbps")
@@ -86,43 +85,6 @@ namespace CableManagementStudio.Migrations
                     b.HasKey("PackageId");
 
                     b.ToTable("Packages");
-                });
-
-            modelBuilder.Entity("CableManagementStudio.Models.Payment", b =>
-                {
-                    b.Property<int>("PaymentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"));
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PaymentMode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Remarks")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("PaymentId");
-
-                    b.HasIndex("CustomerId");
-
-                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("CableManagementStudio.Models.User", b =>
@@ -184,17 +146,6 @@ namespace CableManagementStudio.Migrations
                     b.Navigation("Package");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("CableManagementStudio.Models.Payment", b =>
-                {
-                    b.HasOne("CableManagementStudio.Models.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
                 });
 #pragma warning restore 612, 618
         }

@@ -43,8 +43,6 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IPackageRepository, PackageRepository>();
-builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
-builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 builder.Services.AddScoped<IPackageService, PackageService>();
 
