@@ -9,6 +9,7 @@ namespace CableManagementStudio.Mappings
         public AuthProfile()
         {
             CreateMap<RegisterRequest, User>();
+            CreateMap<User, LoginResponse>();
         }
     }
 }

@@ -19,6 +19,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+
 // =======================
 // Database Configuration
 // =======================
