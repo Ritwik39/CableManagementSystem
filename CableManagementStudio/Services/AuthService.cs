@@ -17,13 +17,16 @@ namespace CableManagementStudio.Services
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthService> _logger;
         private readonly IMapper _mapper;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
         public AuthService(
             IUserRepository userRepository,
+            IRefreshTokenRepository refreshTokenRepository,
             IConfiguration configuration,
             ILogger<AuthService> logger,
             IMapper mapper)
         {
             _userRepository = userRepository;
+            _refreshTokenRepository = refreshTokenRepository;
             _configuration = configuration;
             _logger = logger;
             _mapper = mapper;
@@ -109,20 +112,32 @@ namespace CableManagementStudio.Services
             }
 
             _logger.LogInformation(
-     "Login successful. UserId: {UserId}",
-     user.UserId);
+    "Login successful. UserId: {UserId}",
+    user.UserId);
+
+            var refreshToken = GenerateRefreshToken();
+
+            var refreshTokenEntity = new RefreshToken
+            {
+                Token = refreshToken,
+                UserId = user.UserId,
+                Created = DateTime.UtcNow,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+
+            await _refreshTokenRepository.AddAsync(refreshTokenEntity);
 
             var response = _mapper.Map<LoginResponse>(user);
 
             response.Token = GenerateJwtToken(user);
+            response.RefreshToken = refreshToken;
 
             return ApiResponse<LoginResponse>.SuccessResponse(
                 response,
                 "Login successful");
         }
 
-        public async Task<ApiResponse<object>> ForgotPasswordAsync(
-    ForgotPasswordRequest request)
+        public async Task<ApiResponse<object>> ForgotPasswordAsync(ForgotPasswordRequest request)
         {
             _logger.LogInformation(
                 "Forgot password request for email: {Email}",
@@ -136,17 +151,14 @@ namespace CableManagementStudio.Services
                     "Forgot password failed. Email not found: {Email}",
                     request.Email);
 
-                return ApiResponse<object>.FailureResponse(
-     "Email not found.");
+                return ApiResponse<object>.FailureResponse("Email not found.");
             }
 
             _logger.LogInformation(
                 "Forgot password verification successful for {Email}",
                 request.Email);
 
-            return ApiResponse<object>.SuccessResponse(
-    null,
-    "Email verified. Please call reset-password API to set a new password.");
+            return ApiResponse<object>.SuccessResponse(null,"Email verified. Please call reset-password API to set a new password.");
         }
 
         public async Task<ApiResponse<object>> ResetPasswordAsync(
@@ -251,6 +263,12 @@ namespace CableManagementStudio.Services
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private string GenerateRefreshToken()
+        {
+            return Convert.ToBase64String(
+                System.Security.Cryptography.RandomNumberGenerator.GetBytes(64));
         }
     }
 }

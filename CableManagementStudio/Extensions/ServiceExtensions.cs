@@ -19,6 +19,8 @@ namespace CableManagementStudio.Extensions
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IPackageService, PackageService>();
 
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+
             // Transient
             services.AddTransient<IEmailService, EmailService>();
 
