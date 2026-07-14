@@ -270,5 +270,109 @@ namespace CableManagementStudio.Services
             return Convert.ToBase64String(
                 System.Security.Cryptography.RandomNumberGenerator.GetBytes(64));
         }
+        public async Task<ApiResponse<RefreshTokenResponse>> RefreshTokenAsync(
+    RefreshTokenRequest request)
+        {
+            _logger.LogInformation(
+                "Refresh token request received.");
+
+            var storedToken = await _refreshTokenRepository
+                .GetByTokenAsync(request.RefreshToken);
+
+            if (storedToken == null)
+            {
+                _logger.LogWarning(
+                    "Invalid refresh token.");
+
+                return ApiResponse<RefreshTokenResponse>.FailureResponse(
+                    "Invalid refresh token.");
+            }
+
+            if (storedToken.Revoked != null)
+            {
+                _logger.LogWarning(
+                    "Refresh token already revoked.");
+
+                return ApiResponse<RefreshTokenResponse>.FailureResponse(
+                    "Refresh token has been revoked.");
+            }
+
+            if (storedToken.Expires <= DateTime.UtcNow)
+            {
+                _logger.LogWarning(
+                    "Refresh token expired.");
+
+                return ApiResponse<RefreshTokenResponse>.FailureResponse(
+                    "Refresh token has expired.");
+            }
+
+            storedToken.Revoked = DateTime.UtcNow;
+
+            await _refreshTokenRepository.UpdateAsync(storedToken);
+
+            var newJwtToken = GenerateJwtToken(storedToken.User);
+
+            var newRefreshToken = GenerateRefreshToken();
+
+
+            var refreshTokenEntity = new RefreshToken
+            {
+                Token = newRefreshToken,
+                UserId = storedToken.UserId,
+                Created = DateTime.UtcNow,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+
+            await _refreshTokenRepository.AddAsync(refreshTokenEntity);
+
+            var response = new RefreshTokenResponse
+            {
+                Token = newJwtToken,
+                RefreshToken = newRefreshToken
+            };
+
+            _logger.LogInformation(
+                "Refresh token rotated successfully. UserId: {UserId}",
+                storedToken.UserId);
+
+            return ApiResponse<RefreshTokenResponse>.SuccessResponse(
+                response,
+                "Token refreshed successfully.");
+        }
+
+        public async Task<ApiResponse<object>> LogoutAsync(
+    LogoutRequest request)
+        {
+            _logger.LogInformation("Logout request received.");
+
+            var refreshToken = await _refreshTokenRepository
+                .GetByTokenAsync(request.RefreshToken);
+
+            if (refreshToken == null)
+            {
+                _logger.LogWarning("Invalid refresh token.");
+
+                return ApiResponse<object>.FailureResponse(
+                    "Invalid refresh token.");
+            }
+
+            if (refreshToken.Revoked != null)
+            {
+                return ApiResponse<object>.FailureResponse(
+                    "User already logged out.");
+            }
+
+            refreshToken.Revoked = DateTime.UtcNow;
+
+            await _refreshTokenRepository.UpdateAsync(refreshToken);
+
+            _logger.LogInformation(
+                "User logged out successfully. UserId: {UserId}",
+                refreshToken.UserId);
+
+            return ApiResponse<object>.SuccessResponse(
+                null,
+                "Logout successful.");
+        }
     }
 }

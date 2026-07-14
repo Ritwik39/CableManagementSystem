@@ -41,6 +41,18 @@ namespace CableManagementStudio.Controllers
             return Ok(response);
         }
 
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(
+    RefreshTokenRequest request)
+        {
+            var response = await _authService.RefreshTokenAsync(request);
+
+            if (!response.Success)
+                return Unauthorized(response);
+
+            return Ok(response);
+        }
+
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(
             ForgotPasswordRequest request)
@@ -78,6 +90,18 @@ namespace CableManagementStudio.Controllers
             var response = await _authService.ChangePasswordAsync(
                 userName,
                 request);
+
+            if (!response.Success)
+                return BadRequest(response);
+
+            return Ok(response);
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout(
+    LogoutRequest request)
+        {
+            var response = await _authService.LogoutAsync(request);
 
             if (!response.Success)
                 return BadRequest(response);

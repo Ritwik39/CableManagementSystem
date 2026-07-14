@@ -17,5 +17,9 @@ namespace CableManagementStudio.Services.Interfaces
         Task<ApiResponse<object>> ChangePasswordAsync(
             string userName,
             ChangePasswordRequest request);
+
+        Task<ApiResponse<RefreshTokenResponse>> RefreshTokenAsync(RefreshTokenRequest request);
+
+        Task<ApiResponse<object>> LogoutAsync(LogoutRequest request);
     }
 }
