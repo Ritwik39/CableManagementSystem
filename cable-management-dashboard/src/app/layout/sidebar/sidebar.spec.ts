@@ -1,23 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Sidebar } from './sidebar';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component } from '@angular/core';
 
-describe('Sidebar', () => {
-  let component: Sidebar;
-  let fixture: ComponentFixture<Sidebar>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [Sidebar]
-    })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(Sidebar);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+@Component({
+  selector: 'app-sidebar',
+  imports: [
+    RouterLink,
+    RouterLinkActive
+  ],
+  templateUrl: './sidebar.html',
+  styleUrl: './sidebar.css'
+})
+export class SidebarComponent {}

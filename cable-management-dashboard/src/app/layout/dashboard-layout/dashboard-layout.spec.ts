@@ -1,23 +1,16 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { Sidebar } from '../sidebar/sidebar';
+import { HeaderComponent } from '../header/header';
 
-import { DashboardLayout } from './dashboard-layout';
-
-describe('DashboardLayout', () => {
-  let component: DashboardLayout;
-  let fixture: ComponentFixture<DashboardLayout>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [DashboardLayout]
-    })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(DashboardLayout);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+@Component({
+  selector: 'app-dashboard-layout',
+  imports: [
+    RouterOutlet,
+    Sidebar,
+    HeaderComponent
+  ],
+  templateUrl: './dashboard-layout.html',
+  styleUrl: './dashboard-layout.css'
+})
+export class DashboardLayoutComponent {}

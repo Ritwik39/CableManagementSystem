@@ -1,1 +1,75 @@
-<p>customer-list works!</p>
+<div class="page">
+
+    <div class="page-header">
+
+        <h2>Customers</h2>
+
+        <button>Add Customer</button>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Name</th>
+
+                <th>Mobile</th>
+
+                <th>Address</th>
+
+                <th>Connection</th>
+
+                <th>Package</th>
+
+                <th>Status</th>
+
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="let customer of customers">
+
+                <td>{{customer.name}}</td>
+
+                <td>{{customer.mobile}}</td>
+
+                <td>{{customer.address}}</td>
+
+                <td>{{customer.connectionNumber}}</td>
+
+                <td>{{customer.packageId}}</td>
+
+                <td>
+
+                    <span
+                        [class.active]="customer.isActive"
+                        [class.inactive]="!customer.isActive">
+
+                        {{customer.isActive ? 'Active' : 'Inactive'}}
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <button>Edit</button>
+
+                    <button class="delete">Delete</button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
