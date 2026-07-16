@@ -1,14 +1,236 @@
-<div class="dashboard-layout">
+<!-- Login and registration page -->
+
+<div class="auth-page" *ngIf="!isLoggedIn">
+
+  <div class="auth-decoration">
+    <div class="auth-brand">
+
+      <div class="large-brand-icon">CM</div>
+
+      <h1>Cable Management Studio</h1>
+
+      <p>
+        Manage customers, internet packages and
+        payments from one secure dashboard.
+      </p>
+
+      <div class="feature-list">
+        <span>✓ Customer management</span>
+        <span>✓ Package management</span>
+        <span>✓ Payment tracking</span>
+        <span>✓ Secure JWT authentication</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="auth-form-area">
+
+    <div class="auth-card">
+
+      <div class="auth-card-heading">
+
+        <div class="mobile-auth-logo">CM</div>
+
+        <h2>
+          {{
+            authMode === 'login'
+              ? 'Welcome Back'
+              : 'Create Account'
+          }}
+        </h2>
+
+        <p>
+          {{
+            authMode === 'login'
+              ? 'Sign in to access your dashboard.'
+              : 'Register to start using the application.'
+          }}
+        </p>
+
+      </div>
+
+      <div class="auth-tabs">
+
+        <button
+          type="button"
+          [class.active]="authMode === 'login'"
+          (click)="showLogin()">
+          Login
+        </button>
+
+        <button
+          type="button"
+          [class.active]="authMode === 'register'"
+          (click)="showRegister()">
+          Register
+        </button>
+
+      </div>
+
+      <div
+        class="message error-message"
+        *ngIf="authErrorMessage">
+        {{ authErrorMessage }}
+      </div>
+
+      <div
+        class="message success-message"
+        *ngIf="authSuccessMessage">
+        {{ authSuccessMessage }}
+      </div>
+
+      <!-- Login form -->
+
+      <form
+        class="auth-form"
+        *ngIf="authMode === 'login'"
+        (ngSubmit)="login()">
+
+        <div class="auth-field">
+          <label>Username</label>
+
+          <input
+            type="text"
+            name="loginUserName"
+            [(ngModel)]="loginForm.userName"
+            placeholder="Enter your username"
+            autocomplete="username" />
+        </div>
+
+        <div class="auth-field">
+          <label>Password</label>
+
+          <input
+            type="password"
+            name="loginPassword"
+            [(ngModel)]="loginForm.password"
+            placeholder="Enter your password"
+            autocomplete="current-password" />
+        </div>
+
+        <button
+          type="submit"
+          class="auth-submit-button"
+          [disabled]="authLoading">
+
+          {{
+            authLoading
+              ? 'Signing in...'
+              : 'Login'
+          }}
+
+        </button>
+
+        <p class="auth-switch-text">
+          Don't have an account?
+
+          <button
+            type="button"
+            (click)="showRegister()">
+            Register
+          </button>
+        </p>
+
+      </form>
+
+      <!-- Registration form -->
+
+      <form
+        class="auth-form"
+        *ngIf="authMode === 'register'"
+        (ngSubmit)="register()">
+
+        <div class="auth-field">
+          <label>Full Name</label>
+
+          <input
+            type="text"
+            name="registerFullName"
+            [(ngModel)]="registerForm.fullName"
+            placeholder="Enter your full name"
+            autocomplete="name" />
+        </div>
+
+        <div class="auth-field">
+          <label>Username</label>
+
+          <input
+            type="text"
+            name="registerUserName"
+            [(ngModel)]="registerForm.userName"
+            placeholder="Choose a username"
+            autocomplete="username" />
+        </div>
+
+        <div class="auth-field">
+          <label>Email</label>
+
+          <input
+            type="email"
+            name="registerEmail"
+            [(ngModel)]="registerForm.email"
+            placeholder="Enter your email"
+            autocomplete="email" />
+        </div>
+
+        <div class="auth-field">
+          <label>Password</label>
+
+          <input
+            type="password"
+            name="registerPassword"
+            [(ngModel)]="registerForm.password"
+            placeholder="Create a password"
+            autocomplete="new-password" />
+        </div>
+
+        <button
+          type="submit"
+          class="auth-submit-button"
+          [disabled]="authLoading">
+
+          {{
+            authLoading
+              ? 'Creating account...'
+              : 'Register'
+          }}
+
+        </button>
+
+        <p class="auth-switch-text">
+          Already have an account?
+
+          <button
+            type="button"
+            (click)="showLogin()">
+            Login
+          </button>
+        </p>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Dashboard -->
+
+<div class="dashboard-layout" *ngIf="isLoggedIn">
 
   <aside class="sidebar">
 
     <div class="brand">
+
       <div class="brand-icon">CM</div>
 
       <div>
         <h2>Cable Studio</h2>
         <p>Management Panel</p>
       </div>
+
     </div>
 
     <nav class="menu">
@@ -17,40 +239,32 @@
         type="button"
         [class.active]="selectedMenu === 'Dashboard'"
         (click)="selectMenu('Dashboard')">
-
         <span class="menu-icon">▦</span>
         Dashboard
-
       </button>
 
       <button
         type="button"
         [class.active]="selectedMenu === 'Customers'"
         (click)="selectMenu('Customers')">
-
         <span class="menu-icon">👥</span>
         Customers
-
       </button>
 
       <button
         type="button"
         [class.active]="selectedMenu === 'Packages'"
         (click)="selectMenu('Packages')">
-
         <span class="menu-icon">📦</span>
         Packages
-
       </button>
 
       <button
         type="button"
         [class.active]="selectedMenu === 'Payments'"
         (click)="selectMenu('Payments')">
-
         <span class="menu-icon">💳</span>
         Payments
-
       </button>
 
     </nav>
@@ -59,9 +273,7 @@
       type="button"
       class="logout-button"
       (click)="logout()">
-
       Logout
-
     </button>
 
   </aside>
@@ -73,8 +285,16 @@
       <h3>Cable Management Dashboard</h3>
 
       <div class="admin-profile">
-        <div class="avatar">A</div>
-        <span>Admin</span>
+
+        <div class="avatar">
+          {{ currentUserName.charAt(0).toUpperCase() }}
+        </div>
+
+        <div class="profile-text">
+          <strong>{{ currentUserName }}</strong>
+          <small>{{ currentUserRole }}</small>
+        </div>
+
       </div>
 
     </header>
@@ -84,62 +304,46 @@
       <section *ngIf="selectedMenu === 'Dashboard'">
 
         <div class="page-header">
-
           <div>
             <h1>Dashboard</h1>
-            <p>Overview of your cable management application.</p>
+            <p>
+              Overview of your cable management application.
+            </p>
           </div>
-
-          <button type="button" class="primary-button">
-            + Add Customer
-          </button>
-
         </div>
 
         <div class="summary-grid">
 
           <div class="summary-card">
-
             <div>
               <p>Total Customers</p>
               <h2>{{ totalCustomers }}</h2>
             </div>
-
             <div class="card-icon blue">👥</div>
-
           </div>
 
           <div class="summary-card">
-
             <div>
               <p>Active Customers</p>
               <h2>{{ activeCustomers }}</h2>
             </div>
-
             <div class="card-icon green">✓</div>
-
           </div>
 
           <div class="summary-card">
-
             <div>
               <p>Total Packages</p>
               <h2>{{ totalPackages }}</h2>
             </div>
-
             <div class="card-icon orange">📦</div>
-
           </div>
 
           <div class="summary-card">
-
             <div>
               <p>Total Payments</p>
               <h2>{{ totalPayments }}</h2>
             </div>
-
             <div class="card-icon purple">💳</div>
-
           </div>
 
         </div>
@@ -154,51 +358,54 @@
               <button
                 type="button"
                 (click)="selectMenu('Customers')">
-
                 View All
-
               </button>
             </div>
 
             <div class="table-wrapper">
-
               <table>
 
                 <thead>
                   <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Mobile</th>
                     <th>Connection</th>
                     <th>Status</th>
                   </tr>
                 </thead>
 
                 <tbody>
-
-                  <tr *ngFor="let customer of recentCustomers">
+                  <tr
+                    *ngFor="
+                      let customer of recentCustomers
+                    ">
 
                     <td>{{ customer.customerId }}</td>
                     <td>{{ customer.name }}</td>
-                    <td>{{ customer.mobile }}</td>
-                    <td>{{ customer.connectionNumber }}</td>
+                    <td>
+                      {{ customer.connectionNumber }}
+                    </td>
 
                     <td>
                       <span
                         class="status"
-                        [class.active-status]="customer.isActive">
+                        [class.active-status]="
+                          customer.isActive
+                        ">
 
-                        {{ customer.isActive ? 'Active' : 'Inactive' }}
+                        {{
+                          customer.isActive
+                            ? 'Active'
+                            : 'Inactive'
+                        }}
 
                       </span>
                     </td>
 
                   </tr>
-
                 </tbody>
 
               </table>
-
             </div>
 
           </div>
@@ -206,21 +413,16 @@
           <div class="table-card">
 
             <div class="table-heading">
-
               <h2>Recent Payments</h2>
 
               <button
                 type="button"
                 (click)="selectMenu('Payments')">
-
                 View All
-
               </button>
-
             </div>
 
             <div class="table-wrapper">
-
               <table>
 
                 <thead>
@@ -228,32 +430,42 @@
                     <th>ID</th>
                     <th>Customer</th>
                     <th>Amount</th>
-                    <th>Mode</th>
                     <th>Status</th>
                   </tr>
                 </thead>
 
                 <tbody>
-
-                  <tr *ngFor="let payment of recentPayments">
+                  <tr
+                    *ngFor="
+                      let payment of recentPayments
+                    ">
 
                     <td>{{ payment.paymentId }}</td>
-                    <td>{{ payment.customerId }}</td>
-                    <td>₹{{ payment.amount }}</td>
-                    <td>{{ payment.paymentMode }}</td>
 
                     <td>
-                      <span class="status active-status">
+                      {{
+                        getCustomerName(
+                          payment.customerId
+                        )
+                      }}
+                    </td>
+
+                    <td>₹{{ payment.amount }}</td>
+
+                    <td>
+                      <span
+                        class="status"
+                        [class.active-status]="
+                          payment.status === 'Paid'
+                        ">
                         {{ payment.status }}
                       </span>
                     </td>
 
                   </tr>
-
                 </tbody>
 
               </table>
-
             </div>
 
           </div>
@@ -265,28 +477,22 @@
       <section
         class="placeholder-page"
         *ngIf="selectedMenu === 'Customers'">
-
         <h1>Customers</h1>
         <p>Customer management will appear here.</p>
-
       </section>
 
       <section
         class="placeholder-page"
         *ngIf="selectedMenu === 'Packages'">
-
         <h1>Packages</h1>
         <p>Package management will appear here.</p>
-
       </section>
 
       <section
         class="placeholder-page"
         *ngIf="selectedMenu === 'Payments'">
-
         <h1>Payments</h1>
         <p>Payment management will appear here.</p>
-
       </section>
 
     </main>
