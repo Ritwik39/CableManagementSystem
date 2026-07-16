@@ -1,1 +1,296 @@
-<router-outlet></router-outlet>
+<div class="dashboard-layout">
+
+  <aside class="sidebar">
+
+    <div class="brand">
+      <div class="brand-icon">CM</div>
+
+      <div>
+        <h2>Cable Studio</h2>
+        <p>Management Panel</p>
+      </div>
+    </div>
+
+    <nav class="menu">
+
+      <button
+        type="button"
+        [class.active]="selectedMenu === 'Dashboard'"
+        (click)="selectMenu('Dashboard')">
+
+        <span class="menu-icon">▦</span>
+        Dashboard
+
+      </button>
+
+      <button
+        type="button"
+        [class.active]="selectedMenu === 'Customers'"
+        (click)="selectMenu('Customers')">
+
+        <span class="menu-icon">👥</span>
+        Customers
+
+      </button>
+
+      <button
+        type="button"
+        [class.active]="selectedMenu === 'Packages'"
+        (click)="selectMenu('Packages')">
+
+        <span class="menu-icon">📦</span>
+        Packages
+
+      </button>
+
+      <button
+        type="button"
+        [class.active]="selectedMenu === 'Payments'"
+        (click)="selectMenu('Payments')">
+
+        <span class="menu-icon">💳</span>
+        Payments
+
+      </button>
+
+    </nav>
+
+    <button
+      type="button"
+      class="logout-button"
+      (click)="logout()">
+
+      Logout
+
+    </button>
+
+  </aside>
+
+  <div class="main-area">
+
+    <header class="topbar">
+
+      <h3>Cable Management Dashboard</h3>
+
+      <div class="admin-profile">
+        <div class="avatar">A</div>
+        <span>Admin</span>
+      </div>
+
+    </header>
+
+    <main class="content">
+
+      <section *ngIf="selectedMenu === 'Dashboard'">
+
+        <div class="page-header">
+
+          <div>
+            <h1>Dashboard</h1>
+            <p>Overview of your cable management application.</p>
+          </div>
+
+          <button type="button" class="primary-button">
+            + Add Customer
+          </button>
+
+        </div>
+
+        <div class="summary-grid">
+
+          <div class="summary-card">
+
+            <div>
+              <p>Total Customers</p>
+              <h2>{{ totalCustomers }}</h2>
+            </div>
+
+            <div class="card-icon blue">👥</div>
+
+          </div>
+
+          <div class="summary-card">
+
+            <div>
+              <p>Active Customers</p>
+              <h2>{{ activeCustomers }}</h2>
+            </div>
+
+            <div class="card-icon green">✓</div>
+
+          </div>
+
+          <div class="summary-card">
+
+            <div>
+              <p>Total Packages</p>
+              <h2>{{ totalPackages }}</h2>
+            </div>
+
+            <div class="card-icon orange">📦</div>
+
+          </div>
+
+          <div class="summary-card">
+
+            <div>
+              <p>Total Payments</p>
+              <h2>{{ totalPayments }}</h2>
+            </div>
+
+            <div class="card-icon purple">💳</div>
+
+          </div>
+
+        </div>
+
+        <div class="tables-grid">
+
+          <div class="table-card">
+
+            <div class="table-heading">
+              <h2>Recent Customers</h2>
+
+              <button
+                type="button"
+                (click)="selectMenu('Customers')">
+
+                View All
+
+              </button>
+            </div>
+
+            <div class="table-wrapper">
+
+              <table>
+
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Mobile</th>
+                    <th>Connection</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+
+                  <tr *ngFor="let customer of recentCustomers">
+
+                    <td>{{ customer.customerId }}</td>
+                    <td>{{ customer.name }}</td>
+                    <td>{{ customer.mobile }}</td>
+                    <td>{{ customer.connectionNumber }}</td>
+
+                    <td>
+                      <span
+                        class="status"
+                        [class.active-status]="customer.isActive">
+
+                        {{ customer.isActive ? 'Active' : 'Inactive' }}
+
+                      </span>
+                    </td>
+
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </div>
+
+          <div class="table-card">
+
+            <div class="table-heading">
+
+              <h2>Recent Payments</h2>
+
+              <button
+                type="button"
+                (click)="selectMenu('Payments')">
+
+                View All
+
+              </button>
+
+            </div>
+
+            <div class="table-wrapper">
+
+              <table>
+
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Amount</th>
+                    <th>Mode</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+
+                  <tr *ngFor="let payment of recentPayments">
+
+                    <td>{{ payment.paymentId }}</td>
+                    <td>{{ payment.customerId }}</td>
+                    <td>₹{{ payment.amount }}</td>
+                    <td>{{ payment.paymentMode }}</td>
+
+                    <td>
+                      <span class="status active-status">
+                        {{ payment.status }}
+                      </span>
+                    </td>
+
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <section
+        class="placeholder-page"
+        *ngIf="selectedMenu === 'Customers'">
+
+        <h1>Customers</h1>
+        <p>Customer management will appear here.</p>
+
+      </section>
+
+      <section
+        class="placeholder-page"
+        *ngIf="selectedMenu === 'Packages'">
+
+        <h1>Packages</h1>
+        <p>Package management will appear here.</p>
+
+      </section>
+
+      <section
+        class="placeholder-page"
+        *ngIf="selectedMenu === 'Payments'">
+
+        <h1>Payments</h1>
+        <p>Payment management will appear here.</p>
+
+      </section>
+
+    </main>
+
+  </div>
+
+</div>
