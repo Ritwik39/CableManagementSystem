@@ -1,48 +1,53 @@
-<!-- LOGIN / REGISTER -->
+<!-- Login and registration page -->
 
 <div class="auth-page" *ngIf="!isLoggedIn">
 
-  <section class="auth-left">
-
+  <div class="auth-decoration">
     <div class="auth-brand">
 
-      <div class="auth-logo">
-        CM
-      </div>
+      <div class="large-brand-icon">CM</div>
 
       <h1>Cable Management Studio</h1>
 
       <p>
-        Manage customers, packages and payment records from one dashboard.
+        Manage customers, internet packages and
+        payments from one secure dashboard.
       </p>
 
-      <div class="auth-features">
-        <span>✓ Secure JWT login</span>
+      <div class="feature-list">
         <span>✓ Customer management</span>
         <span>✓ Package management</span>
         <span>✓ Payment tracking</span>
+        <span>✓ Secure JWT authentication</span>
       </div>
 
     </div>
+  </div>
 
-  </section>
-
-  <section class="auth-right">
+  <div class="auth-form-area">
 
     <div class="auth-card">
 
-      <div class="auth-heading">
+      <div class="auth-card-heading">
+
+        <div class="mobile-auth-logo">CM</div>
+
         <h2>
-          {{ authMode === 'login' ? 'Welcome Back' : 'Create Account' }}
+          {{
+            authMode === 'login'
+              ? 'Welcome Back'
+              : 'Create Account'
+          }}
         </h2>
 
         <p>
           {{
             authMode === 'login'
-              ? 'Login to access your dashboard.'
-              : 'Register a new customer account.'
+              ? 'Sign in to access your dashboard.'
+              : 'Register to start using the application.'
           }}
         </p>
+
       </div>
 
       <div class="auth-tabs">
@@ -75,30 +80,32 @@
         {{ authSuccessMessage }}
       </div>
 
+      <!-- Login form -->
+
       <form
         class="auth-form"
         *ngIf="authMode === 'login'"
         (ngSubmit)="login()">
 
-        <div class="form-field">
+        <div class="auth-field">
           <label>Username</label>
 
           <input
             type="text"
             name="loginUserName"
             [(ngModel)]="loginForm.userName"
-            placeholder="Enter username"
+            placeholder="Enter your username"
             autocomplete="username" />
         </div>
 
-        <div class="form-field">
+        <div class="auth-field">
           <label>Password</label>
 
           <input
             type="password"
             name="loginPassword"
             [(ngModel)]="loginForm.password"
-            placeholder="Enter password"
+            placeholder="Enter your password"
             autocomplete="current-password" />
         </div>
 
@@ -107,12 +114,15 @@
           class="auth-submit-button"
           [disabled]="authLoading">
 
-          {{ authLoading ? 'Signing in...' : 'Login' }}
+          {{
+            authLoading
+              ? 'Signing in...'
+              : 'Login'
+          }}
 
         </button>
 
-        <p class="auth-switch">
-
+        <p class="auth-switch-text">
           Don't have an account?
 
           <button
@@ -120,54 +130,59 @@
             (click)="showRegister()">
             Register
           </button>
-
         </p>
 
       </form>
+
+      <!-- Registration form -->
 
       <form
         class="auth-form"
         *ngIf="authMode === 'register'"
         (ngSubmit)="register()">
 
-        <div class="form-field">
+        <div class="auth-field">
           <label>Full Name</label>
 
           <input
             type="text"
             name="registerFullName"
             [(ngModel)]="registerForm.fullName"
-            placeholder="Enter full name" />
+            placeholder="Enter your full name"
+            autocomplete="name" />
         </div>
 
-        <div class="form-field">
+        <div class="auth-field">
           <label>Username</label>
 
           <input
             type="text"
             name="registerUserName"
             [(ngModel)]="registerForm.userName"
-            placeholder="Choose username" />
+            placeholder="Choose a username"
+            autocomplete="username" />
         </div>
 
-        <div class="form-field">
+        <div class="auth-field">
           <label>Email</label>
 
           <input
             type="email"
             name="registerEmail"
             [(ngModel)]="registerForm.email"
-            placeholder="Enter email" />
+            placeholder="Enter your email"
+            autocomplete="email" />
         </div>
 
-        <div class="form-field">
+        <div class="auth-field">
           <label>Password</label>
 
           <input
             type="password"
             name="registerPassword"
             [(ngModel)]="registerForm.password"
-            placeholder="Create password" />
+            placeholder="Create a password"
+            autocomplete="new-password" />
         </div>
 
         <button
@@ -175,12 +190,15 @@
           class="auth-submit-button"
           [disabled]="authLoading">
 
-          {{ authLoading ? 'Creating account...' : 'Register' }}
+          {{
+            authLoading
+              ? 'Creating account...'
+              : 'Register'
+          }}
 
         </button>
 
-        <p class="auth-switch">
-
+        <p class="auth-switch-text">
           Already have an account?
 
           <button
@@ -188,18 +206,17 @@
             (click)="showLogin()">
             Login
           </button>
-
         </p>
 
       </form>
 
     </div>
 
-  </section>
+  </div>
 
 </div>
 
-<!-- DASHBOARD -->
+<!-- Dashboard -->
 
 <div class="dashboard-layout" *ngIf="isLoggedIn">
 
@@ -207,9 +224,7 @@
 
     <div class="brand">
 
-      <div class="brand-logo">
-        CM
-      </div>
+      <div class="brand-icon">CM</div>
 
       <div>
         <h2>Cable Studio</h2>
@@ -218,13 +233,13 @@
 
     </div>
 
-    <nav class="navigation">
+    <nav class="menu">
 
       <button
         type="button"
         [class.active]="selectedMenu === 'Dashboard'"
         (click)="selectMenu('Dashboard')">
-        <span>▦</span>
+        <span class="menu-icon">▦</span>
         Dashboard
       </button>
 
@@ -232,7 +247,7 @@
         type="button"
         [class.active]="selectedMenu === 'Customers'"
         (click)="selectMenu('Customers')">
-        <span>👥</span>
+        <span class="menu-icon">👥</span>
         Customers
       </button>
 
@@ -240,7 +255,7 @@
         type="button"
         [class.active]="selectedMenu === 'Packages'"
         (click)="selectMenu('Packages')">
-        <span>📦</span>
+        <span class="menu-icon">📦</span>
         Packages
       </button>
 
@@ -248,7 +263,7 @@
         type="button"
         [class.active]="selectedMenu === 'Payments'"
         (click)="selectMenu('Payments')">
-        <span>💳</span>
+        <span class="menu-icon">💳</span>
         Payments
       </button>
 
@@ -267,17 +282,17 @@
 
     <header class="topbar">
 
-      <h2>Cable Management Dashboard</h2>
+      <h3>Cable Management Dashboard</h3>
 
-      <div class="profile">
+      <div class="admin-profile">
 
         <div class="avatar">
           {{ currentUserName.charAt(0).toUpperCase() }}
         </div>
 
-        <div>
+        <div class="profile-text">
           <strong>{{ currentUserName }}</strong>
-          <span>{{ currentUserRole }}</span>
+          <small>{{ currentUserRole }}</small>
         </div>
 
       </div>
@@ -286,80 +301,59 @@
 
     <main class="content">
 
-      <div
-        class="message error-message"
-        *ngIf="errorMessage">
-        {{ errorMessage }}
-      </div>
-
-      <div
-        class="message success-message"
-        *ngIf="successMessage">
-        {{ successMessage }}
-      </div>
-
-      <!-- DASHBOARD HOME -->
-
       <section *ngIf="selectedMenu === 'Dashboard'">
 
-        <div class="page-heading">
-
+        <div class="page-header">
           <div>
             <h1>Dashboard</h1>
-            <p>Overview of your cable management application.</p>
+            <p>
+              Overview of your cable management application.
+            </p>
           </div>
-
-          <button
-            type="button"
-            class="primary-button"
-            (click)="openAddCustomerForm()">
-            + Add Customer
-          </button>
-
         </div>
 
         <div class="summary-grid">
 
-          <article class="summary-card">
+          <div class="summary-card">
             <div>
               <p>Total Customers</p>
               <h2>{{ totalCustomers }}</h2>
             </div>
-            <div class="summary-icon blue">👥</div>
-          </article>
+            <div class="card-icon blue">👥</div>
+          </div>
 
-          <article class="summary-card">
+          <div class="summary-card">
             <div>
               <p>Active Customers</p>
               <h2>{{ activeCustomers }}</h2>
             </div>
-            <div class="summary-icon green">✓</div>
-          </article>
+            <div class="card-icon green">✓</div>
+          </div>
 
-          <article class="summary-card">
+          <div class="summary-card">
             <div>
               <p>Total Packages</p>
               <h2>{{ totalPackages }}</h2>
             </div>
-            <div class="summary-icon orange">📦</div>
-          </article>
+            <div class="card-icon orange">📦</div>
+          </div>
 
-          <article class="summary-card">
+          <div class="summary-card">
             <div>
               <p>Total Payments</p>
               <h2>{{ totalPayments }}</h2>
             </div>
-            <div class="summary-icon purple">💳</div>
-          </article>
+            <div class="card-icon purple">💳</div>
+          </div>
 
         </div>
 
-        <div class="dashboard-tables">
+        <div class="tables-grid">
 
-          <section class="data-card">
+          <div class="table-card">
 
-            <div class="card-header">
-              <h3>Recent Customers</h3>
+            <div class="table-heading">
+              <h2>Recent Customers</h2>
 
               <button
                 type="button"
@@ -369,7 +363,6 @@
             </div>
 
             <div class="table-wrapper">
-
               <table>
 
                 <thead>
@@ -382,36 +375,45 @@
                 </thead>
 
                 <tbody>
+                  <tr
+                    *ngFor="
+                      let customer of recentCustomers
+                    ">
 
-                  <tr *ngFor="let customer of recentCustomers">
                     <td>{{ customer.customerId }}</td>
                     <td>{{ customer.name }}</td>
-                    <td>{{ customer.connectionNumber }}</td>
+                    <td>
+                      {{ customer.connectionNumber }}
+                    </td>
 
                     <td>
                       <span
-                        class="status-badge"
-                        [class.active-status]="customer.isActive"
-                        [class.inactive-status]="!customer.isActive">
+                        class="status"
+                        [class.active-status]="
+                          customer.isActive
+                        ">
 
-                        {{ customer.isActive ? 'Active' : 'Inactive' }}
+                        {{
+                          customer.isActive
+                            ? 'Active'
+                            : 'Inactive'
+                        }}
 
                       </span>
                     </td>
-                  </tr>
 
+                  </tr>
                 </tbody>
 
               </table>
-
             </div>
 
-          </section>
+          </div>
 
-          <section class="data-card">
+          <div class="table-card">
 
-            <div class="card-header">
-              <h3>Recent Payments</h3>
+            <div class="table-heading">
+              <h2>Recent Payments</h2>
 
               <button
                 type="button"
@@ -421,7 +423,6 @@
             </div>
 
             <div class="table-wrapper">
-
               <table>
 
                 <thead>
@@ -434,507 +435,64 @@
                 </thead>
 
                 <tbody>
+                  <tr
+                    *ngFor="
+                      let payment of recentPayments
+                    ">
 
-                  <tr *ngFor="let payment of recentPayments">
                     <td>{{ payment.paymentId }}</td>
-                    <td>{{ getCustomerName(payment.customerId) }}</td>
+
+                    <td>
+                      {{
+                        getCustomerName(
+                          payment.customerId
+                        )
+                      }}
+                    </td>
+
                     <td>₹{{ payment.amount }}</td>
 
                     <td>
                       <span
-                        class="status-badge"
-                        [class.active-status]="payment.status === 'Paid'"
-                        [class.pending-status]="payment.status !== 'Paid'">
-
+                        class="status"
+                        [class.active-status]="
+                          payment.status === 'Paid'
+                        ">
                         {{ payment.status }}
-
                       </span>
                     </td>
-                  </tr>
 
+                  </tr>
                 </tbody>
 
               </table>
-
             </div>
 
-          </section>
+          </div>
 
         </div>
 
       </section>
 
-      <!-- CUSTOMERS -->
-
-      <section *ngIf="selectedMenu === 'Customers'">
-
-        <div class="page-heading">
-
-          <div>
-            <h1>Customers</h1>
-            <p>Add, update and delete customer records.</p>
-          </div>
-
-          <button
-            type="button"
-            class="primary-button"
-            (click)="openAddCustomerForm()">
-            + Add Customer
-          </button>
-
-        </div>
-
-        <section
-          class="form-card"
-          *ngIf="showCustomerForm">
-
-          <div class="form-card-header">
-
-            <h3>
-              {{
-                editingCustomerId === null
-                  ? 'Add Customer'
-                  : 'Update Customer'
-              }}
-            </h3>
-
-            <button
-              type="button"
-              class="close-button"
-              (click)="cancelCustomerForm()">
-              ×
-            </button>
-
-          </div>
-
-          <!-- CREATE FORM -->
-
-          <form
-            *ngIf="editingCustomerId === null"
-            (ngSubmit)="submitCustomerForm()">
-
-            <div class="form-grid">
-
-              <div class="form-field">
-                <label>Full Name</label>
-                <input
-                  type="text"
-                  name="fullName"
-                  [(ngModel)]="createCustomerForm.fullName" />
-              </div>
-
-              <div class="form-field">
-                <label>Username</label>
-                <input
-                  type="text"
-                  name="userName"
-                  [(ngModel)]="createCustomerForm.userName" />
-              </div>
-
-              <div class="form-field">
-                <label>Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  [(ngModel)]="createCustomerForm.email" />
-              </div>
-
-              <div class="form-field">
-                <label>Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  [(ngModel)]="createCustomerForm.password" />
-              </div>
-
-              <div class="form-field">
-                <label>Mobile</label>
-                <input
-                  type="text"
-                  name="mobile"
-                  [(ngModel)]="createCustomerForm.mobile" />
-              </div>
-
-              <div class="form-field">
-                <label>Connection Number</label>
-                <input
-                  type="text"
-                  name="connectionNumber"
-                  [(ngModel)]="createCustomerForm.connectionNumber" />
-              </div>
-
-              <div class="form-field full-width">
-                <label>Address</label>
-                <input
-                  type="text"
-                  name="address"
-                  [(ngModel)]="createCustomerForm.address" />
-              </div>
-
-              <div class="form-field">
-                <label>Package</label>
-
-                <select
-                  name="packageId"
-                  [(ngModel)]="createCustomerForm.packageId">
-
-                  <option
-                    *ngFor="let packageItem of packages"
-                    [value]="packageItem.packageId">
-
-                    {{ packageItem.packageName }}
-
-                  </option>
-
-                </select>
-              </div>
-
-            </div>
-
-            <div class="form-actions">
-
-              <button
-                type="button"
-                class="secondary-button"
-                (click)="cancelCustomerForm()">
-                Cancel
-              </button>
-
-              <button
-                type="submit"
-                class="primary-button"
-                [disabled]="pageLoading">
-                {{ pageLoading ? 'Saving...' : 'Add Customer' }}
-              </button>
-
-            </div>
-
-          </form>
-
-          <!-- UPDATE FORM -->
-
-          <form
-            *ngIf="editingCustomerId !== null"
-            (ngSubmit)="submitCustomerForm()">
-
-            <div class="form-grid">
-
-              <div class="form-field">
-                <label>Name</label>
-                <input
-                  type="text"
-                  name="updateName"
-                  [(ngModel)]="updateCustomerForm.name" />
-              </div>
-
-              <div class="form-field">
-                <label>Mobile</label>
-                <input
-                  type="text"
-                  name="updateMobile"
-                  [(ngModel)]="updateCustomerForm.mobile" />
-              </div>
-
-              <div class="form-field">
-                <label>Connection Number</label>
-                <input
-                  type="text"
-                  name="updateConnectionNumber"
-                  [(ngModel)]="updateCustomerForm.connectionNumber" />
-              </div>
-
-              <div class="form-field">
-                <label>Package</label>
-
-                <select
-                  name="updatePackageId"
-                  [(ngModel)]="updateCustomerForm.packageId">
-
-                  <option
-                    *ngFor="let packageItem of packages"
-                    [value]="packageItem.packageId">
-
-                    {{ packageItem.packageName }}
-
-                  </option>
-
-                </select>
-              </div>
-
-              <div class="form-field full-width">
-                <label>Address</label>
-                <input
-                  type="text"
-                  name="updateAddress"
-                  [(ngModel)]="updateCustomerForm.address" />
-              </div>
-
-              <div class="form-field checkbox-field">
-
-                <label>
-                  <input
-                    type="checkbox"
-                    name="isActive"
-                    [(ngModel)]="updateCustomerForm.isActive" />
-
-                  Active Customer
-                </label>
-
-              </div>
-
-            </div>
-
-            <div class="form-actions">
-
-              <button
-                type="button"
-                class="secondary-button"
-                (click)="cancelCustomerForm()">
-                Cancel
-              </button>
-
-              <button
-                type="submit"
-                class="primary-button"
-                [disabled]="pageLoading">
-                {{ pageLoading ? 'Updating...' : 'Update Customer' }}
-              </button>
-
-            </div>
-
-          </form>
-
-        </section>
-
-        <section class="data-card">
-
-          <div class="filter-bar">
-
-            <input
-              type="search"
-              [(ngModel)]="customerSearch"
-              placeholder="Search customer..." />
-
-          </div>
-
-          <div class="loading-text" *ngIf="pageLoading">
-            Loading customers...
-          </div>
-
-          <div class="table-wrapper" *ngIf="!pageLoading">
-
-            <table>
-
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Mobile</th>
-                  <th>Address</th>
-                  <th>Connection</th>
-                  <th>Package</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-
-              <tbody>
-
-                <tr *ngFor="let customer of filteredCustomers">
-
-                  <td>{{ customer.customerId }}</td>
-                  <td>{{ customer.name }}</td>
-                  <td>{{ customer.mobile }}</td>
-                  <td>{{ customer.address }}</td>
-                  <td>{{ customer.connectionNumber }}</td>
-                  <td>{{ getPackageName(customer.packageId) }}</td>
-
-                  <td>
-                    <span
-                      class="status-badge"
-                      [class.active-status]="customer.isActive"
-                      [class.inactive-status]="!customer.isActive">
-
-                      {{ customer.isActive ? 'Active' : 'Inactive' }}
-
-                    </span>
-                  </td>
-
-                  <td>
-
-                    <div class="action-buttons">
-
-                      <button
-                        type="button"
-                        class="edit-button"
-                        (click)="openEditCustomerForm(customer)">
-                        Edit
-                      </button>
-
-                      <button
-                        type="button"
-                        class="delete-button"
-                        (click)="deleteCustomer(customer)">
-                        Delete
-                      </button>
-
-                    </div>
-
-                  </td>
-
-                </tr>
-
-                <tr *ngIf="filteredCustomers.length === 0">
-                  <td colspan="8" class="empty-state">
-                    No customers found.
-                  </td>
-                </tr>
-
-              </tbody>
-
-            </table>
-
-          </div>
-
-        </section>
-
+      <section
+        class="placeholder-page"
+        *ngIf="selectedMenu === 'Customers'">
+        <h1>Customers</h1>
+        <p>Customer management will appear here.</p>
       </section>
 
-      <!-- PACKAGES -->
-
-      <section *ngIf="selectedMenu === 'Packages'">
-
-        <div class="page-heading">
-          <div>
-            <h1>Packages</h1>
-            <p>Available cable packages.</p>
-          </div>
-        </div>
-
-        <section class="data-card">
-
-          <div class="filter-bar">
-
-            <input
-              type="search"
-              [(ngModel)]="packageSearch"
-              placeholder="Search package..." />
-
-          </div>
-
-          <div class="table-wrapper">
-
-            <table>
-
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Package Name</th>
-                  <th>Speed</th>
-                  <th>Price</th>
-                </tr>
-              </thead>
-
-              <tbody>
-
-                <tr *ngFor="let packageItem of filteredPackages">
-                  <td>{{ packageItem.packageId }}</td>
-                  <td>{{ packageItem.packageName }}</td>
-                  <td>{{ packageItem.speedMbps }} Mbps</td>
-                  <td>₹{{ packageItem.price }}</td>
-                </tr>
-
-                <tr *ngIf="filteredPackages.length === 0">
-                  <td colspan="4" class="empty-state">
-                    No packages found.
-                  </td>
-                </tr>
-
-              </tbody>
-
-            </table>
-
-          </div>
-
-        </section>
-
+      <section
+        class="placeholder-page"
+        *ngIf="selectedMenu === 'Packages'">
+        <h1>Packages</h1>
+        <p>Package management will appear here.</p>
       </section>
 
-      <!-- PAYMENTS -->
-
-      <section *ngIf="selectedMenu === 'Payments'">
-
-        <div class="page-heading">
-          <div>
-            <h1>Payments</h1>
-            <p>Customer payment history.</p>
-          </div>
-        </div>
-
-        <section class="data-card">
-
-          <div class="filter-bar">
-
-            <input
-              type="search"
-              [(ngModel)]="paymentSearch"
-              placeholder="Search payment..." />
-
-          </div>
-
-          <div class="table-wrapper">
-
-            <table>
-
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Customer</th>
-                  <th>Amount</th>
-                  <th>Date</th>
-                  <th>Mode</th>
-                  <th>Status</th>
-                  <th>Remarks</th>
-                </tr>
-              </thead>
-
-              <tbody>
-
-                <tr *ngFor="let payment of filteredPayments">
-                  <td>{{ payment.paymentId }}</td>
-                  <td>{{ getCustomerName(payment.customerId) }}</td>
-                  <td>₹{{ payment.amount }}</td>
-                  <td>{{ payment.paymentDate }}</td>
-                  <td>{{ payment.paymentMode }}</td>
-
-                  <td>
-                    <span
-                      class="status-badge"
-                      [class.active-status]="payment.status === 'Paid'"
-                      [class.pending-status]="payment.status !== 'Paid'">
-
-                      {{ payment.status }}
-
-                    </span>
-                  </td>
-
-                  <td>{{ payment.remarks || '-' }}</td>
-                </tr>
-
-                <tr *ngIf="filteredPayments.length === 0">
-                  <td colspan="7" class="empty-state">
-                    No payments found.
-                  </td>
-                </tr>
-
-              </tbody>
-
-            </table>
-
-          </div>
-
-        </section>
-
+      <section
+        class="placeholder-page"
+        *ngIf="selectedMenu === 'Payments'">
+        <h1>Payments</h1>
+        <p>Payment management will appear here.</p>
       </section>
 
     </main>
