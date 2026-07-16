@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CableManagementStudio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260714180256_AddRefreshToken")]
-    partial class AddRefreshToken
+    [Migration("20260716164217_AddRefreshTokenTable")]
+    partial class AddRefreshTokenTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

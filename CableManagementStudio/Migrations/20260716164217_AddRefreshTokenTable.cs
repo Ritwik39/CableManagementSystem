@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CableManagementStudio.Migrations
 {
     /// <inheritdoc />
-    public partial class AddRefreshToken : Migration
+    public partial class AddRefreshTokenTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
