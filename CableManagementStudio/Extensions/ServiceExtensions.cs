@@ -13,12 +13,14 @@ namespace CableManagementStudio.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IPackageRepository, PackageRepository>();
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
+
 
             // Services
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IPackageService, PackageService>();
-
+            services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
             // Transient
@@ -26,6 +28,7 @@ namespace CableManagementStudio.Extensions
 
             // Singleton
             services.AddSingleton<IApplicationInfoService, ApplicationInfoService>();
+           
 
             return services;
         }

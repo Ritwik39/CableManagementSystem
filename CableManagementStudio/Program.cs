@@ -8,19 +8,24 @@ using CableManagementStudio.Services.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//Logging 
+
+builder.Host.UseSerilog((context, services, configuration) =>
+{
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext();
+});
 
 // =======================
 // Add MVC Controllers
 // =======================
 builder.Services.AddControllers();
-
-// =======================
-// Register Payment Dependencies
-// =======================
-builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
-builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 // =======================
 // Database Configuration
@@ -85,6 +90,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
+// Use serilog
+
+app.UseSerilogRequestLogging();
 
 // =======================
 // Global Exception Middleware

@@ -34,7 +34,7 @@ namespace CableManagementStudio.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            //throw new Exception("Testing Global Exception Middleware"); // for testing Middleware   
+            //throw new Exception("Testing Serilog "); // for testing Middleware   
 
 
             var customers = await _customerService.GetAllAsync();
