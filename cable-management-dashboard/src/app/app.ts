@@ -23,6 +23,7 @@ interface LoginData {
   role: string;
   isActive: boolean;
   token: string;
+  refreshToken: string;
 }
 
 interface ApiResponse<T> {
@@ -64,7 +65,7 @@ interface Payment {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App implements OnInit {
   private readonly apiUrl = 'https://localhost:7177/api';
@@ -83,14 +84,14 @@ export class App implements OnInit {
 
   loginForm: LoginRequest = {
     userName: '',
-    password: ''
+    password: '',
   };
 
   registerForm: RegisterRequest = {
     fullName: '',
     userName: '',
     email: '',
-    password: ''
+    password: '',
   };
 
   customers: Customer[] = [];
@@ -104,10 +105,8 @@ export class App implements OnInit {
 
     if (token) {
       this.isLoggedIn = true;
-      this.currentUserName =
-        localStorage.getItem('userName') ?? 'Admin';
-      this.currentUserRole =
-        localStorage.getItem('role') ?? '';
+      this.currentUserName = localStorage.getItem('userName') ?? 'Admin';
+      this.currentUserRole = localStorage.getItem('role') ?? '';
 
       this.loadDashboardData();
     }
@@ -126,66 +125,43 @@ export class App implements OnInit {
   login(): void {
     this.clearAuthMessages();
 
-    if (
-      !this.loginForm.userName.trim() ||
-      !this.loginForm.password.trim()
-    ) {
-      this.authErrorMessage =
-        'Please enter username and password.';
+    if (!this.loginForm.userName.trim() || !this.loginForm.password.trim()) {
+      this.authErrorMessage = 'Please enter username and password.';
       return;
     }
 
     this.authLoading = true;
 
-    this.http
-      .post<ApiResponse<LoginData>>(
-        `${this.apiUrl}/Auth/login`,
-        this.loginForm
-      )
-      .subscribe({
-        next: response => {
-          this.authLoading = false;
+    this.http.post<ApiResponse<LoginData>>(`${this.apiUrl}/Auth/login`, this.loginForm).subscribe({
+      next: (response) => {
+        this.authLoading = false;
 
-          if (!response.success || !response.data?.token) {
-            this.authErrorMessage =
-              response.message || 'Login failed.';
-            return;
-          }
-
-          localStorage.setItem(
-            'token',
-            response.data.token
-          );
-
-          localStorage.setItem(
-            'userName',
-            response.data.userName
-          );
-
-          localStorage.setItem(
-            'role',
-            response.data.role
-          );
-
-          this.currentUserName =
-            response.data.fullName ||
-            response.data.userName;
-
-          this.currentUserRole = response.data.role;
-          this.isLoggedIn = true;
-          this.selectedMenu = 'Dashboard';
-
-          this.loadDashboardData();
-        },
-        error: error => {
-          this.authLoading = false;
-          this.authErrorMessage =
-            this.getErrorMessage(
-              error,
-              'Invalid username or password.'
-            );
+        if (!response.success || !response.data?.token) {
+          this.authErrorMessage = response.message || 'Login failed.';
+          return;
         }
-      });
+
+        localStorage.setItem('token', response.data.token);
+
+        localStorage.setItem('userName', response.data.userName);
+
+        localStorage.setItem('role', response.data.role);
+
+        localStorage.setItem('refreshToken', response.data.refreshToken);
+
+        this.currentUserName = response.data.fullName || response.data.userName;
+
+        this.currentUserRole = response.data.role;
+        this.isLoggedIn = true;
+        this.selectedMenu = 'Dashboard';
+
+        this.loadDashboardData();
+      },
+      error: (error) => {
+        this.authLoading = false;
+        this.authErrorMessage = this.getErrorMessage(error, 'Invalid username or password.');
+      },
+    });
   }
 
   register(): void {
@@ -197,76 +173,87 @@ export class App implements OnInit {
       !this.registerForm.email.trim() ||
       !this.registerForm.password.trim()
     ) {
-      this.authErrorMessage =
-        'Please fill all registration fields.';
+      this.authErrorMessage = 'Please fill all registration fields.';
       return;
     }
 
     this.authLoading = true;
 
     this.http
-      .post<ApiResponse<object>>(
-        `${this.apiUrl}/Auth/register`,
-        this.registerForm
-      )
+      .post<ApiResponse<object>>(`${this.apiUrl}/Auth/register`, this.registerForm)
       .subscribe({
-        next: response => {
+        next: (response) => {
           this.authLoading = false;
 
           if (!response.success) {
-            this.authErrorMessage =
-              response.message || 'Registration failed.';
+            this.authErrorMessage = response.message || 'Registration failed.';
             return;
           }
 
-          this.authSuccessMessage =
-            response.message ||
-            'Registration successful. Please login.';
+          this.authSuccessMessage = response.message || 'Registration successful. Please login.';
 
-          const registeredUserName =
-            this.registerForm.userName;
+          const registeredUserName = this.registerForm.userName;
 
           this.registerForm = {
             fullName: '',
             userName: '',
             email: '',
-            password: ''
+            password: '',
           };
 
-          this.loginForm.userName =
-            registeredUserName;
+          this.loginForm.userName = registeredUserName;
 
           this.authMode = 'login';
         },
-        error: error => {
+        error: (error) => {
           this.authLoading = false;
-          this.authErrorMessage =
-            this.getErrorMessage(
-              error,
-              'Unable to register.'
-            );
-        }
+          this.authErrorMessage = this.getErrorMessage(error, 'Unable to register.');
+        },
       });
   }
 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('role');
+    const refreshToken = localStorage.getItem('refreshToken');
 
-    this.isLoggedIn = false;
-    this.currentUserName = 'Admin';
-    this.currentUserRole = '';
-    this.authMode = 'login';
+    if (!refreshToken) {
+      localStorage.clear();
+      this.isLoggedIn = false;
+      return;
+    }
 
-    this.loginForm = {
-      userName: '',
-      password: ''
-    };
+    this.http
+      .post<ApiResponse<object>>(`${this.apiUrl}/Auth/logout`, {
+        refreshToken: refreshToken,
+      })
+      .subscribe({
+        next: () => {
+          localStorage.removeItem('token');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('userName');
+          localStorage.removeItem('role');
 
-    this.clearAuthMessages();
+          this.isLoggedIn = false;
+          this.currentUserName = 'Admin';
+          this.currentUserRole = '';
+          this.authMode = 'login';
+
+          this.loginForm = {
+            userName: '',
+            password: '',
+          };
+
+          this.clearAuthMessages();
+        },
+        error: (err) => {
+          console.error(err);
+
+          // Optional: local logout even if API fails
+          localStorage.clear();
+
+          this.isLoggedIn = false;
+        },
+      });
   }
-
   selectMenu(menu: string): void {
     this.selectedMenu = menu;
   }
@@ -295,7 +282,7 @@ export class App implements OnInit {
         mobile: '1234567890',
         address: 'Kolkata',
         connectionNumber: 'CN00123',
-        isActive: true
+        isActive: true,
       },
       {
         customerId: 2,
@@ -305,8 +292,8 @@ export class App implements OnInit {
         mobile: '0987563572',
         address: 'Kolkata',
         connectionNumber: 'CN0045',
-        isActive: true
-      }
+        isActive: true,
+      },
     ];
 
     this.packages = [
@@ -314,8 +301,8 @@ export class App implements OnInit {
         packageId: 1,
         packageName: 'Basic Plan',
         price: 499,
-        speedMbps: 50
-      }
+        speedMbps: 50,
+      },
     ];
 
     this.payments = [
@@ -326,8 +313,8 @@ export class App implements OnInit {
         paymentDate: '2026-07-16',
         paymentMode: 'UPI',
         status: 'Paid',
-        remarks: 'Monthly payment'
-      }
+        remarks: 'Monthly payment',
+      },
     ];
   }
 
@@ -336,9 +323,7 @@ export class App implements OnInit {
   }
 
   get activeCustomers(): number {
-    return this.customers.filter(
-      customer => customer.isActive
-    ).length;
+    return this.customers.filter((customer) => customer.isActive).length;
   }
 
   get totalPackages(): number {
@@ -358,12 +343,7 @@ export class App implements OnInit {
   }
 
   getCustomerName(customerId: number): string {
-    return (
-      this.customers.find(
-        customer =>
-          customer.customerId === customerId
-      )?.name ?? 'Unknown'
-    );
+    return this.customers.find((customer) => customer.customerId === customerId)?.name ?? 'Unknown';
   }
 
   private clearAuthMessages(): void {
@@ -371,15 +351,8 @@ export class App implements OnInit {
     this.authSuccessMessage = '';
   }
 
-  private getErrorMessage(
-    error: HttpErrorResponse,
-    fallback: string
-  ): string {
-    return (
-      error.error?.message ??
-      error.error?.Message ??
-      fallback
-    );
+  private getErrorMessage(error: HttpErrorResponse, fallback: string): string {
+    return error.error?.message ?? error.error?.Message ?? fallback;
   }
 
   /*
