@@ -1,0 +1,87 @@
+.sidebar {
+  position: fixed;
+
+  top: 0;
+
+  left: 0;
+
+  width: 260px;
+
+  height: 100vh;
+
+  background: linear-gradient(180deg, #172554, #1e40af);
+
+  color: white;
+
+  padding: 24px;
+}
+
+.brand {
+  display: flex;
+
+  align-items: center;
+
+  gap: 15px;
+
+  margin-bottom: 40px;
+}
+
+.logo {
+  width: 50px;
+
+  height: 50px;
+
+  border-radius: 12px;
+
+  display: grid;
+
+  place-items: center;
+
+  background: rgba(255, 255, 255, 0.15);
+
+  font-weight: bold;
+}
+
+.brand h2 {
+  margin: 0;
+
+  font-size: 20px;
+}
+
+.brand span {
+  font-size: 12px;
+
+  opacity: 0.8;
+}
+
+nav {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+nav a {
+  text-decoration: none;
+
+  color: white;
+
+  padding: 14px 16px;
+
+  border-radius: 10px;
+
+  transition: 0.3s;
+}
+
+nav a:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.active {
+  background: white;
+
+  color: #1e40af !important;
+
+  font-weight: 600;
+}

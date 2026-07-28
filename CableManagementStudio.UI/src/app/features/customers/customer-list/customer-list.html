@@ -1,0 +1,23 @@
+<h2>Customer List</h2>
+
+<table border="1" cellpadding="10">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Mobile</th>
+      <th>Connection</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let customer of customers">
+      <td>{{ customer.customerId }}</td>
+      <td>{{ customer.name }}</td>
+      <td>{{ customer.mobile }}</td>
+      <td>{{ customer.connectionNumber }}</td>
+      <td>{{ customer.isActive ? 'Active' : 'Inactive' }}</td>
+    </tr>
+  </tbody>
+</table>
