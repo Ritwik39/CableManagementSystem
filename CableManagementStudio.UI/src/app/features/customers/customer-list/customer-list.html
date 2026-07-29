@@ -3,10 +3,13 @@
 <table border="1" cellpadding="10">
   <thead>
     <tr>
-      <th>ID</th>
+      <th>Customer ID</th>
+      <th>User ID</th>
+      <th>Package ID</th>
       <th>Name</th>
       <th>Mobile</th>
-      <th>Connection</th>
+      <th>Address</th>
+      <th>Connection No</th>
       <th>Status</th>
     </tr>
   </thead>
@@ -14,8 +17,11 @@
   <tbody>
     <tr *ngFor="let customer of customers">
       <td>{{ customer.customerId }}</td>
+      <td>{{ customer.userId }}</td>
+      <td>{{ customer.packageId }}</td>
       <td>{{ customer.name }}</td>
       <td>{{ customer.mobile }}</td>
+      <td>{{ customer.address }}</td>
       <td>{{ customer.connectionNumber }}</td>
       <td>{{ customer.isActive ? 'Active' : 'Inactive' }}</td>
     </tr>

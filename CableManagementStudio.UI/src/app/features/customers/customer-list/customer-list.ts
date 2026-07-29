@@ -21,6 +21,20 @@ export class CustomerList implements OnInit {
   }
 
   loadCustomers(): void {
-    console.log('Calling API...');
-  }
+  console.log('Calling API...');
+
+  this.customerService.getCustomers().subscribe({
+    next: (data) => {
+      console.log('API Success:', data);
+      console.log('Total Records:', data.length);
+
+      this.customers = data;
+    },
+    error: (err) => {
+      console.error('API Error:', err);
+    },
+  });
+}
+    
+  
 }
