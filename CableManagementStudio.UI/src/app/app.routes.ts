@@ -1,51 +1,54 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth-guard';
 
 export const routes: Routes = [
-  {
-    path: 'login',
-    loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
-  },
 
   {
     path: '',
-    loadComponent: () =>
-      import('./layout/dashboard-layout/dashboard-layout').then((m) => m.DashboardLayout),
-
-    children: [
-      {
-        path: 'dashboard',
-        loadComponent: () =>
-          import('./features/dashboard/dashboard/dashboard').then((m) => m.Dashboard),
-      },
-
-      {
-        path: 'customers',
-        loadComponent: () =>
-          import('./features/customers/customer-list/customer-list').then((m) => m.CustomerList),
-      },
-
-      {
-        path: 'packages',
-        loadComponent: () =>
-          import('./features/packages/package-list/package-list').then((m) => m.PackageList),
-      },
-
-      {
-        path: 'payments',
-        loadComponent: () =>
-          import('./features/payments/payment-list/payment-list').then((m) => m.PaymentList),
-      },
-
-      {
-        path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full',
-      },
-    ],
+    redirectTo: 'login',
+    pathMatch: 'full'
   },
 
   {
-    path: '**',
-    redirectTo: 'login',
+    path: 'login',
+    loadComponent: () =>
+      import('./features/auth/login/login')
+        .then(m => m.LoginComponent)
   },
+
+  {
+    path: 'dashboard',
+    loadComponent: () =>
+      import('./features/dashboard/dashboard/dashboard')
+        .then(m => m.DashboardComponent)
+  },
+
+  {
+  path: 'dashboard',
+  loadComponent: () =>
+    import('./features/dashboard/dashboard/dashboard')
+      .then(m => m.DashboardComponent)
+},
+{
+  path: 'customers',
+  canActivate: [authGuard],
+  loadComponent: () =>
+    import('./features/customers/customer-list/customer-list')
+      .then(m => m.CustomerListComponent)
+},
+{
+  path: 'packages',
+  canActivate: [authGuard],
+  loadComponent: () =>
+    import('./features/packages/package-list/package-list')
+      .then(m => m.PackageListComponent)
+},
+{
+  path: 'payments',
+  canActivate: [authGuard],
+  loadComponent: () =>
+    import('./features/payments/payment-list/payment-list')
+      .then(m => m.PaymentListComponent)
+}
+
 ];

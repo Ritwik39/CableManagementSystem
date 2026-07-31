@@ -1,29 +1,113 @@
-<h2>Customer List</h2>
+<div class="page-header">
 
-<table border="1" cellpadding="10">
-  <thead>
-    <tr>
-      <th>Customer ID</th>
-      <th>User ID</th>
-      <th>Package ID</th>
-      <th>Name</th>
-      <th>Mobile</th>
-      <th>Address</th>
-      <th>Connection No</th>
-      <th>Status</th>
-    </tr>
-  </thead>
+    <h2>Customers</h2>
 
-  <tbody>
-    <tr *ngFor="let customer of customers">
-      <td>{{ customer.customerId }}</td>
-      <td>{{ customer.userId }}</td>
-      <td>{{ customer.packageId }}</td>
-      <td>{{ customer.name }}</td>
-      <td>{{ customer.mobile }}</td>
-      <td>{{ customer.address }}</td>
-      <td>{{ customer.connectionNumber }}</td>
-      <td>{{ customer.isActive ? 'Active' : 'Inactive' }}</td>
-    </tr>
-  </tbody>
-</table>
+    <button
+        class="add-btn"
+        (click)="addCustomer()">
+
+        + Add Customer
+
+    </button>
+
+</div>
+
+<div class="table-container">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>ID</th>
+                <th>Name</th>
+                <th>Mobile</th>
+                <th>Address</th>
+                <th>Connection No.</th>
+                <th>Package</th>
+                <th>Status</th>
+                <th>Actions</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr *ngIf="loading">
+
+                <td colspan="8" class="loading">
+
+                    Loading Customers...
+
+                </td>
+
+            </tr>
+
+            <tr
+                *ngFor="let customer of customers">
+
+                <td>{{ customer.customerId }}</td>
+
+                <td>{{ customer.name }}</td>
+
+                <td>{{ customer.mobile }}</td>
+
+                <td>{{ customer.address }}</td>
+
+                <td>{{ customer.connectionNumber }}</td>
+
+                <td>{{ customer['packageName'] }}</td>
+
+                <td>
+
+                    <span
+                        class="status"
+                        [class.active]="customer.isActive"
+                        [class.inactive]="!customer.isActive">
+
+                        {{ customer.isActive ? 'Active' : 'Inactive' }}
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <button
+                        class="edit-btn"
+                        (click)="editCustomer(customer.customerId)">
+
+                        Edit
+
+                    </button>
+
+                    <button
+                        class="delete-btn"
+                        (click)="deleteCustomer(customer.customerId)">
+
+                        Delete
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr
+                *ngIf="!loading && customers.length === 0">
+
+                <td colspan="8">
+
+                    No customers found.
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>

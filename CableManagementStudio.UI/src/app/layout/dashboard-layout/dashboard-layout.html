@@ -1,11 +1,115 @@
 <div class="layout">
-  <app-sidebar></app-sidebar>
 
-  <div class="main-content">
-    <app-header></app-header>
+    <!-- Sidebar -->
 
-    <main class="content">
-      <router-outlet></router-outlet>
-    </main>
-  </div>
+    <aside class="sidebar" [class.collapsed]="!sidebarOpen">
+
+        <div class="logo">
+
+            <h2>CMS</h2>
+
+            <small>Cable Management</small>
+
+        </div>
+
+        <ul class="menu">
+
+            <li>
+
+                <a routerLink="/dashboard" routerLinkActive="active">
+
+                    📊 Dashboard
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a routerLink="/customers" routerLinkActive="active">
+
+                    👥 Customers
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a routerLink="/packages" routerLinkActive="active">
+
+                    📦 Packages
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a routerLink="/payments" routerLinkActive="active">
+
+                    💳 Payments
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <!-- Main Content -->
+
+    <div class="main">
+
+        <!-- Header -->
+
+        <header class="header">
+
+            <button
+                class="menu-btn"
+                (click)="toggleSidebar()">
+
+                ☰
+
+            </button>
+
+            <div class="title">
+
+                <h2>Cable Management System</h2>
+
+            </div>
+
+            <div class="profile">
+
+                <div class="user">
+
+                    <strong>{{ fullName }}</strong>
+
+                    <span>{{ role }}</span>
+
+                </div>
+
+                <button
+                    class="logout-btn"
+                    (click)="logout()">
+
+                    Logout
+
+                </button>
+
+            </div>
+
+        </header>
+
+        <!-- Page Content -->
+
+        <div class="content">
+
+            <router-outlet></router-outlet>
+
+        </div>
+
+    </div>
+
 </div>
