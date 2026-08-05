@@ -3,11 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import {
-  AuthService,
-  LoginRequest,
-  RegisterRequest
-} from '../../../core/services/auth.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { LoginRequest } from '../../../core/models/login-request';
+import { RegisterRequest } from '../../../core/models/register-request';
 
 @Component({
   selector: 'app-login',
@@ -28,14 +26,14 @@ export class LoginComponent {
   selectedTab: 'login' | 'register' = 'login';
 
   // ==========================
-  // Login Model
+  // Login
   // ==========================
 
   username = '';
   password = '';
 
   // ==========================
-  // Register Model
+  // Register
   // ==========================
 
   fullName = '';
@@ -53,29 +51,25 @@ export class LoginComponent {
   showConfirmPassword = false;
 
   // ==========================
-  // Loading
+  // Status
   // ==========================
 
   loading = false;
 
-  // ==========================
-  // Messages
-  // ==========================
-
   loginError = '';
   registerError = '';
- registerSuccess = '';
+  registerSuccess = '';
 
   constructor(
     private authService: AuthService,
     private router: Router
-  ) { }
+  ) {}
 
   // ==========================
-  // Change Tabs
+  // Change Tab
   // ==========================
 
-  changeTab(tab: 'login' | 'register') {
+  changeTab(tab: 'login' | 'register'): void {
 
     this.selectedTab = tab;
 
@@ -94,21 +88,16 @@ export class LoginComponent {
     this.loginError = '';
 
     if (!this.username || !this.password) {
-
       this.loginError = 'Please enter Username and Password.';
       return;
-
     }
 
     this.loading = true;
 
     const request: LoginRequest = {
-
-      username: this.username,
-      password: this.password
-
-    };
-
+        userName: this.username,
+        password: this.password
+};
     this.authService.login(request).subscribe({
 
       next: (response) => {
@@ -126,14 +115,10 @@ export class LoginComponent {
         this.loading = false;
 
         if (error.status === 401) {
-
           this.loginError = 'Invalid Username or Password';
-
         }
         else {
-
           this.loginError = 'Unable to connect to server';
-
         }
 
       }
@@ -158,29 +143,23 @@ export class LoginComponent {
       !this.registerPassword ||
       !this.confirmPassword
     ) {
-
       this.registerError = 'Please fill all fields.';
       return;
-
     }
 
     if (this.registerPassword !== this.confirmPassword) {
-
       this.registerError = 'Passwords do not match.';
       return;
-
     }
 
-    const request: RegisterRequest = {
+    this.loading = true;
 
+    const request: RegisterRequest = {
       fullName: this.fullName,
       username: this.registerUsername,
       email: this.email,
       password: this.registerPassword
-
     };
-
-    this.loading = true;
 
     this.authService.register(request).subscribe({
 
@@ -197,18 +176,21 @@ export class LoginComponent {
         this.confirmPassword = '';
 
         setTimeout(() => {
-
           this.selectedTab = 'login';
-
         }, 1500);
 
       },
 
-      error: () => {
+      error: (error) => {
 
         this.loading = false;
 
-        this.registerError = 'Registration Failed';
+        if (error.error?.message) {
+          this.registerError = error.error.message;
+        }
+        else {
+          this.registerError = 'Registration Failed.';
+        }
 
       }
 

@@ -73,15 +73,17 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngularApp", policy =>
     {
         policy
-            .WithOrigins("http://localhost:4200")
+            .AllowAnyOrigin()
             .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+            .AllowAnyMethod();
     });
 });
 
+
+
 var app = builder.Build();
 
+Log.Information("Application started successfully.");
 // =======================
 // Enable Swagger
 // =======================
