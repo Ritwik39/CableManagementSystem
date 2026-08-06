@@ -35,9 +35,7 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
     this.loadDashboard();
-
   }
 
   loadDashboard(): void {
@@ -89,9 +87,7 @@ export class DashboardComponent implements OnInit {
   }
 
   refreshDashboard(): void {
-
     this.loadDashboard();
-
   }
 
 }
