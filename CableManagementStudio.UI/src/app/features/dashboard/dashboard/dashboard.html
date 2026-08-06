@@ -1,1 +1,200 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+
+    <div class="dashboard-header">
+
+        <div>
+            <h2>Dashboard</h2>
+            <p>Welcome to Cable Management System</p>
+        </div>
+
+        <button class="refresh-btn"
+                (click)="refreshDashboard()">
+            Refresh
+        </button>
+
+    </div>
+
+    <!-- Loading -->
+
+    <div *ngIf="loading" class="loading">
+
+        Loading dashboard...
+
+    </div>
+
+    <!-- Error -->
+
+    <div *ngIf="!loading && errorMessage"
+         class="error-message">
+
+        {{ errorMessage }}
+
+    </div>
+
+    <!-- Dashboard -->
+
+    <div *ngIf="!loading">
+
+        <!-- Statistics -->
+
+        <div class="stats-grid">
+
+            <div class="stat-card customers">
+
+                <div class="icon">
+                    👥
+                </div>
+
+                <div>
+
+                    <h3>Total Customers</h3>
+
+                    <h1>{{ totalCustomers }}</h1>
+
+                </div>
+
+            </div>
+
+            <div class="stat-card packages">
+
+                <div class="icon">
+                    📦
+                </div>
+
+                <div>
+
+                    <h3>Total Packages</h3>
+
+                    <h1>{{ totalPackages }}</h1>
+
+                </div>
+
+            </div>
+
+            <div class="stat-card payments">
+
+                <div class="icon">
+                    💳
+                </div>
+
+                <div>
+
+                    <h3>Total Payments</h3>
+
+                    <h1>{{ totalPayments }}</h1>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Recent Payments -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3>Recent Payments</h3>
+
+            </div>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Payment ID</th>
+
+                            <th>Customer</th>
+
+                            <th>Package</th>
+
+                            <th>Amount</th>
+
+                            <th>Payment Date</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr *ngIf="recentPayments.length === 0">
+
+                            <td colspan="5">
+
+                                No payment records found.
+
+                            </td>
+
+                        </tr>
+
+                        <tr *ngFor="let payment of recentPayments">
+
+                            <td>{{ payment.paymentId }}</td>
+
+                            <td>{{ payment.customerName }}</td>
+
+                            <td>{{ payment.packageName }}</td>
+
+                            <td>₹ {{ payment.amount }}</td>
+
+                            <td>{{ payment.paymentDate | date:'dd-MMM-yyyy' }}</td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <!-- Quick Actions -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3>Quick Actions</h3>
+
+            </div>
+
+            <div class="actions">
+
+                <button
+                    class="action-btn"
+                    routerLink="/customers">
+
+                    Add Customer
+
+                </button>
+
+                <button
+                    class="action-btn"
+                    routerLink="/packages">
+
+                    Add Package
+
+                </button>
+
+                <button
+                    class="action-btn"
+                    routerLink="/payments">
+
+                    Add Payment
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

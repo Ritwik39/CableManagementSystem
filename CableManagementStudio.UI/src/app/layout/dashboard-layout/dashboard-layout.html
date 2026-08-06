@@ -1,14 +1,19 @@
-<div class="layout">
+<div class="layout-container">
 
     <!-- Sidebar -->
 
-    <aside class="sidebar" [class.collapsed]="!sidebarOpen">
+    <aside class="sidebar"
+           [class.collapsed]="sidebarCollapsed">
 
         <div class="logo">
 
-            <h2>CMS</h2>
+            <h2 *ngIf="!sidebarCollapsed">
+                CMS
+            </h2>
 
-            <small>Cable Management</small>
+            <h2 *ngIf="sidebarCollapsed">
+                C
+            </h2>
 
         </div>
 
@@ -16,19 +21,15 @@
 
             <li>
 
-                <a routerLink="/dashboard" routerLinkActive="active">
+                <a
+                    routerLink="/dashboard"
+                    routerLinkActive="active">
 
-                    📊 Dashboard
+                    <span class="icon">🏠</span>
 
-                </a>
-
-            </li>
-
-            <li>
-
-                <a routerLink="/customers" routerLinkActive="active">
-
-                    👥 Customers
+                    <span *ngIf="!sidebarCollapsed">
+                        Dashboard
+                    </span>
 
                 </a>
 
@@ -36,9 +37,15 @@
 
             <li>
 
-                <a routerLink="/packages" routerLinkActive="active">
+                <a
+                    routerLink="/customers"
+                    routerLinkActive="active">
 
-                    📦 Packages
+                    <span class="icon">👥</span>
+
+                    <span *ngIf="!sidebarCollapsed">
+                        Customers
+                    </span>
 
                 </a>
 
@@ -46,9 +53,31 @@
 
             <li>
 
-                <a routerLink="/payments" routerLinkActive="active">
+                <a
+                    routerLink="/packages"
+                    routerLinkActive="active">
 
-                    💳 Payments
+                    <span class="icon">📦</span>
+
+                    <span *ngIf="!sidebarCollapsed">
+                        Packages
+                    </span>
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a
+                    routerLink="/payments"
+                    routerLinkActive="active">
+
+                    <span class="icon">💳</span>
+
+                    <span *ngIf="!sidebarCollapsed">
+                        Payments
+                    </span>
 
                 </a>
 
@@ -56,59 +85,66 @@
 
         </ul>
 
+        <div class="sidebar-footer">
+
+            <button
+                class="logout-btn"
+                (click)="logout()">
+
+                🚪
+
+                <span *ngIf="!sidebarCollapsed">
+                    Logout
+                </span>
+
+            </button>
+
+        </div>
+
     </aside>
 
     <!-- Main Content -->
 
-    <div class="main">
+    <div class="main-content">
 
-        <!-- Header -->
+        <!-- Topbar -->
 
-        <header class="header">
+        <header class="topbar">
 
             <button
-                class="menu-btn"
+                class="toggle-btn"
                 (click)="toggleSidebar()">
 
                 ☰
 
             </button>
 
-            <div class="title">
+            <div class="topbar-title">
 
-                <h2>Cable Management System</h2>
+                Cable Management Studio
 
             </div>
 
-            <div class="profile">
+            <div class="user-info">
 
-                <div class="user">
+                Welcome,
+                <strong>
 
-                    <strong>{{ fullName }}</strong>
+                    {{ fullName || username }}
 
-                    <span>{{ role }}</span>
-
-                </div>
-
-                <button
-                    class="logout-btn"
-                    (click)="logout()">
-
-                    Logout
-
-                </button>
+                    </strong>
 
             </div>
 
         </header>
 
-        <!-- Page Content -->
+        <!-- Routed Page -->
 
-        <div class="content">
+        <main class="page-content">
 
             <router-outlet></router-outlet>
 
-        </div>
+        </main>
 
     </div>
 

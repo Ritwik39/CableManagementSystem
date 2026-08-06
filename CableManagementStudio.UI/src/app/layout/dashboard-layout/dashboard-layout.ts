@@ -1,42 +1,36 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard-layout',
   standalone: true,
   imports: [
     CommonModule,
-    RouterOutlet
-],
+    RouterModule
+  ],
   templateUrl: './dashboard-layout.html',
   styleUrl: './dashboard-layout.css'
 })
 export class DashboardLayoutComponent {
 
-  sidebarOpen = true;
+  sidebarCollapsed = false;
+
+  fullName = localStorage.getItem('fullName');
+  username = localStorage.getItem('username');
 
   constructor(
-    private authService: AuthService,
     private router: Router
   ) { }
 
-  toggleSidebar() {
-    this.sidebarOpen = !this.sidebarOpen;
+  toggleSidebar(): void {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
   }
 
-  logout() {
-    this.authService.logout();
+  logout(): void {
+    localStorage.clear();
     this.router.navigate(['/login']);
   }
 
-  get fullName(): string {
-    return localStorage.getItem('fullName') || 'Administrator';
-  }
-
-  get role(): string {
-    return localStorage.getItem('role') || 'Admin';
-  }
-
 }
+

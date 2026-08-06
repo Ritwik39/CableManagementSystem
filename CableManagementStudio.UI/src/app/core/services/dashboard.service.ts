@@ -1,15 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-export interface DashboardData {
-  totalCustomers: number;
-  activeCustomers: number;
-  totalPackages: number;
-  monthlyCollection: number;
-  pendingPayments: number;
-  recentPayments: any[];
-}
 
 @Injectable({
   providedIn: 'root'
@@ -18,11 +9,50 @@ export class DashboardService {
 
   private http = inject(HttpClient);
 
-  // Change this to your backend URL
-  private apiUrl = 'https://localhost:5001/api/dashboard';
+  private customerApi = 'https://localhost:7177/api/Customer';
+  private packageApi = 'https://localhost:7177/api/Package';
+  private paymentApi = 'https://localhost:7177/api/Payment';
 
-  getDashboard(): Observable<DashboardData> {
-    return this.http.get<DashboardData>(this.apiUrl);
+  constructor() { }
+
+  private getHeaders(): HttpHeaders {
+
+    const token = localStorage.getItem('token');
+
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+  }
+
+  getCustomers(): Observable<any[]> {
+
+    return this.http.get<any[]>(
+      this.customerApi,
+      {
+        headers: this.getHeaders()
+      });
+
+  }
+
+  getPackages(): Observable<any[]> {
+
+    return this.http.get<any[]>(
+      this.packageApi,
+      {
+        headers: this.getHeaders()
+      });
+
+  }
+
+  getPayments(): Observable<any[]> {
+
+    return this.http.get<any[]>(
+      this.paymentApi,
+      {
+        headers: this.getHeaders()
+      });
+
   }
 
 }

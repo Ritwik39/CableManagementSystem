@@ -9,6 +9,7 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
 
+  // Login (UNCHANGED)
   {
     path: 'login',
     loadComponent: () =>
@@ -16,39 +17,51 @@ export const routes: Routes = [
         .then(m => m.LoginComponent)
   },
 
+  // Main Application Layout
   {
-    path: 'dashboard',
+    path: '',
+    canActivate: [authGuard],
     loadComponent: () =>
-      import('./features/dashboard/dashboard/dashboard')
-        .then(m => m.DashboardComponent)
+      import('./layout/dashboard-layout/dashboard-layout')
+        .then(m => m.DashboardLayoutComponent),
+
+    children: [
+
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./features/dashboard/dashboard/dashboard')
+            .then(m => m.DashboardComponent)
+      },
+
+      {
+        path: 'customers',
+        loadComponent: () =>
+          import('./features/customers/customer-list/customer-list')
+            .then(m => m.CustomerListComponent)
+      },
+
+      {
+        path: 'packages',
+        loadComponent: () =>
+          import('./features/packages/package-list/package-list')
+            .then(m => m.PackageListComponent)
+      },
+
+      {
+        path: 'payments',
+        loadComponent: () =>
+          import('./features/payments/payment-list/payment-list')
+            .then(m => m.PaymentListComponent)
+      }
+
+    ]
+
   },
 
   {
-  path: 'dashboard',
-  loadComponent: () =>
-    import('./features/dashboard/dashboard/dashboard')
-      .then(m => m.DashboardComponent)
-},
-{
-  path: 'customers',
-  canActivate: [authGuard],
-  loadComponent: () =>
-    import('./features/customers/customer-list/customer-list')
-      .then(m => m.CustomerListComponent)
-},
-{
-  path: 'packages',
-  canActivate: [authGuard],
-  loadComponent: () =>
-    import('./features/packages/package-list/package-list')
-      .then(m => m.PackageListComponent)
-},
-{
-  path: 'payments',
-  canActivate: [authGuard],
-  loadComponent: () =>
-    import('./features/payments/payment-list/payment-list')
-      .then(m => m.PaymentListComponent)
-}
+    path: '**',
+    redirectTo: 'login'
+  }
 
 ];
