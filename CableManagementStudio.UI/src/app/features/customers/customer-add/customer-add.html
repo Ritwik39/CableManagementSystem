@@ -1,0 +1,231 @@
+<div class="customer-add-page">
+  <!-- Header -->
+
+  <div class="page-header">
+    <div>
+      <h2>Add Customer</h2>
+
+      <p>Create a new customer account and connection</p>
+    </div>
+
+    <button type="button" class="back-btn" (click)="cancel()">← Back to Customers</button>
+  </div>
+
+  <!-- Form Card -->
+
+  <div class="form-card">
+    <form (ngSubmit)="addCustomer()" #customerForm="ngForm">
+      <!-- =========================
+           ACCOUNT INFORMATION
+      ========================== -->
+
+      <div class="section">
+        <div class="section-title">
+          <span class="section-icon"> 👤 </span>
+
+          <div>
+            <h3>Account Information</h3>
+
+            <p>Login credentials for the customer</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <!-- Full Name -->
+
+          <div class="form-group">
+            <label>
+              Full Name
+              <span>*</span>
+            </label>
+
+            <input
+              type="text"
+              name="fullName"
+              placeholder="Enter full name"
+              [(ngModel)]="fullName"
+              required
+            />
+          </div>
+
+          <!-- Username -->
+
+          <div class="form-group">
+            <label>
+              Username
+              <span>*</span>
+            </label>
+
+            <input
+              type="text"
+              name="userName"
+              placeholder="Choose username"
+              [(ngModel)]="userName"
+              required
+            />
+          </div>
+
+          <!-- Email -->
+
+          <div class="form-group">
+            <label>
+              Email
+              <span>*</span>
+            </label>
+
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter email address"
+              [(ngModel)]="email"
+              required
+            />
+          </div>
+
+          <!-- Password -->
+
+          <div class="form-group">
+            <label>
+              Password
+              <span>*</span>
+            </label>
+
+            <input
+              type="password"
+              name="password"
+              placeholder="Create password"
+              [(ngModel)]="password"
+              required
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================
+           CONNECTION INFORMATION
+      ========================== -->
+
+      <div class="section">
+        <div class="section-title">
+          <span class="section-icon"> 🔌 </span>
+
+          <div>
+            <h3>Connection Information</h3>
+
+            <p>Customer connection and contact details</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <!-- Mobile -->
+
+          <div class="form-group">
+            <label>
+              Mobile Number
+              <span>*</span>
+            </label>
+
+            <input
+              type="tel"
+              name="mobile"
+              placeholder="Enter mobile number"
+              [(ngModel)]="mobile"
+              required
+            />
+          </div>
+
+          <!-- Connection Number -->
+
+          <div class="form-group">
+            <label>
+              Connection Number
+              <span>*</span>
+            </label>
+
+            <input
+              type="text"
+              name="connectionNumber"
+              placeholder="Example: CN102"
+              [(ngModel)]="connectionNumber"
+              required
+            />
+          </div>
+
+          <!-- Address -->
+
+          <div class="form-group full-width">
+            <label>
+              Address
+              <span>*</span>
+            </label>
+
+            <textarea
+              name="address"
+              rows="3"
+              placeholder="Enter customer address"
+              [(ngModel)]="address"
+              required
+            >
+            </textarea>
+          </div>
+
+          <!-- Package -->
+
+          <div class="form-group full-width">
+            <label>
+              Package
+              <span>*</span>
+            </label>
+
+            <select name="packageId" [(ngModel)]="packageId" required>
+              <option [ngValue]="null">Select Package</option>
+
+              <option *ngFor="let package of packages" [ngValue]="package.packageId">
+                {{ package.packageName }}
+                - ₹{{ package.price }}
+                /
+                {{ package.speedMbps }} Mbps
+              </option>
+            </select>
+
+            <small *ngIf="loadingPackages"> Loading packages... </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================
+           SUCCESS MESSAGE
+      ========================== -->
+
+      <div *ngIf="successMessage" class="success-message">
+        <span>✓</span>
+
+        {{ successMessage }}
+      </div>
+
+      <!-- =========================
+           ERROR MESSAGE
+      ========================== -->
+
+      <div *ngIf="errorMessage" class="error-message">
+        <span>⚠️</span>
+
+        {{ errorMessage }}
+      </div>
+
+      <!-- =========================
+           ACTIONS
+      ========================== -->
+
+      <div class="form-actions">
+        <button type="button" class="cancel-btn" (click)="cancel()">Cancel</button>
+
+        <button type="submit" class="save-btn" [disabled]="loading || loadingPackages">
+          <span *ngIf="!loading"> Create Customer </span>
+
+          <span *ngIf="loading"> Creating Customer... </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

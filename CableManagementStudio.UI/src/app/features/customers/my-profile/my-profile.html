@@ -1,0 +1,171 @@
+<div class="profile-page">
+  <!-- Header -->
+
+  <div class="profile-header">
+    <div>
+      <h2>My Profile</h2>
+
+      <p>View your account and connection details</p>
+    </div>
+
+    <button class="refresh-btn" (click)="loadProfile()" [disabled]="loading">
+      {{ loading ? 'Loading...' : 'Refresh' }}
+    </button>
+  </div>
+
+  <!-- Loading -->
+
+  <div *ngIf="loading" class="loading">
+    <div class="loader"></div>
+
+    <p>Loading your profile...</p>
+  </div>
+
+  <!-- Error -->
+
+  <div *ngIf="!loading && errorMessage" class="error-card">
+    <div class="error-icon">⚠️</div>
+
+    <div>
+      <h3>Unable to load profile</h3>
+
+      <p>{{ errorMessage }}</p>
+    </div>
+  </div>
+
+  <!-- Profile -->
+
+  <div *ngIf="!loading && profile" class="profile-container">
+    <!-- Profile Card -->
+
+    <div class="profile-card">
+      <!-- Profile Header -->
+
+      <div class="profile-card-header">
+        <div class="avatar">
+          {{ profile.name?.charAt(0)?.toUpperCase() }}
+        </div>
+
+        <div>
+          <h2>
+            {{ profile.name }}
+          </h2>
+
+          <p>Customer</p>
+        </div>
+      </div>
+
+      <!-- Status -->
+
+      <div class="status-section">
+        <span class="status-badge" [class.inactive]="!profile.isActive">
+          <span class="status-dot"></span>
+
+          {{ profile.isActive ? 'Active' : 'Inactive' }}
+        </span>
+      </div>
+
+      <!-- Personal Information -->
+
+      <div class="section">
+        <h3>Personal Information</h3>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-icon">👤</div>
+
+            <div>
+              <span> Full Name </span>
+
+              <strong>
+                {{ profile.name }}
+              </strong>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-icon">📱</div>
+
+            <div>
+              <span> Mobile Number </span>
+
+              <strong>
+                {{ profile.mobile }}
+              </strong>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-icon">📍</div>
+
+            <div>
+              <span> Address </span>
+
+              <strong>
+                {{ profile.address }}
+              </strong>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-icon">🔌</div>
+
+            <div>
+              <span> Connection Number </span>
+
+              <strong>
+                {{ profile.connectionNumber }}
+              </strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Package Information -->
+
+      <div class="section package-section">
+        <h3>Current Package</h3>
+
+        <div class="package-card">
+          <div class="package-icon">📦</div>
+
+          <div class="package-info">
+            <h2>
+              {{ profile.packageName || 'No Package' }}
+            </h2>
+
+            <p>Current subscription</p>
+          </div>
+
+          <div class="package-status">
+            <span>
+              {{ profile.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="package-details">
+          <div>
+            <span> Monthly Price </span>
+
+            <strong> ₹{{ profile.price || 0 }} </strong>
+          </div>
+
+          <div>
+            <span> Internet Speed </span>
+
+            <strong> {{ profile.speedMbps || 0 }} Mbps </strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customer ID -->
+
+      <div class="profile-footer">
+        <span> Customer ID </span>
+
+        <strong> #{{ profile.customerId }} </strong>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,113 +1,68 @@
 <div class="page-header">
+  <h2>Customers</h2>
 
-    <h2>Customers</h2>
-
-    <button
-        class="add-btn"
-        (click)="addCustomer()">
-
-        + Add Customer
-
-    </button>
-
+  <button class="add-btn" (click)="addCustomer()">+ Add Customer</button>
 </div>
 
 <div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Address</th>
+        <th>Connection No.</th>
+        <th>Package</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
 
-    <table>
+    <tbody>
+      <tr *ngIf="loading">
+        <td colspan="8" class="loading">Loading Customers...</td>
+      </tr>
 
-        <thead>
+      <tr *ngFor="let customer of customers">
+        <td>{{ customer.customerId }}</td>
 
-            <tr>
+        <td>{{ customer.name }}</td>
 
-                <th>ID</th>
-                <th>Name</th>
-                <th>Mobile</th>
-                <th>Address</th>
-                <th>Connection No.</th>
-                <th>Package</th>
-                <th>Status</th>
-                <th>Actions</th>
+        <td>{{ customer.mobile }}</td>
 
-            </tr>
+        <td>{{ customer.address }}</td>
 
-        </thead>
+        <td>{{ customer.connectionNumber }}</td>
 
-        <tbody>
+        <td>
+          {{ packageMap.get(customer.packageId) || 'N/A' }}
+        </td>
 
-            <tr *ngIf="loading">
+        <td>
+          <span
+            class="status"
+            [class.active]="customer.isActive"
+            [class.inactive]="!customer.isActive"
+          >
+            {{ customer.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
 
-                <td colspan="8" class="loading">
+        <td>
+          <div class="action-buttons">
+            <button class="edit-btn" (click)="editCustomer(customer.customerId)">✏️ Edit</button>
 
-                    Loading Customers...
+            <button class="delete-btn" (click)="deleteCustomer(customer.customerId)">
+              🗑 Delete
+            </button>
+          </div>
+        </td>
+      </tr>
 
-                </td>
-
-            </tr>
-
-            <tr
-                *ngFor="let customer of customers">
-
-                <td>{{ customer.customerId }}</td>
-
-                <td>{{ customer.name }}</td>
-
-                <td>{{ customer.mobile }}</td>
-
-                <td>{{ customer.address }}</td>
-
-                <td>{{ customer.connectionNumber }}</td>
-
-                <td>{{ customer['packageName'] }}</td>
-
-                <td>
-
-                    <span
-                        class="status"
-                        [class.active]="customer.isActive"
-                        [class.inactive]="!customer.isActive">
-
-                        {{ customer.isActive ? 'Active' : 'Inactive' }}
-
-                    </span>
-
-                </td>
-
-                <td>
-
-                    <button
-                        class="edit-btn"
-                        (click)="editCustomer(customer.customerId)">
-
-                        Edit
-
-                    </button>
-
-                    <button
-                        class="delete-btn"
-                        (click)="deleteCustomer(customer.customerId)">
-
-                        Delete
-
-                    </button>
-
-                </td>
-
-            </tr>
-
-            <tr
-                *ngIf="!loading && customers.length === 0">
-
-                <td colspan="8">
-
-                    No customers found.
-
-                </td>
-
-            </tr>
-
-        </tbody>
-
-    </table>
-
+      <tr *ngIf="!loading && customers.length === 0">
+        <td colspan="8">No customers found.</td>
+      </tr>
+    </tbody>
+  </table>
 </div>

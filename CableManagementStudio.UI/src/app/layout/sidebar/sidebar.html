@@ -17,5 +17,12 @@
     <a routerLink="/packages" routerLinkActive="active"> Packages </a>
 
     <a routerLink="/payments" routerLinkActive="active"> Payments </a>
+    <li *ngIf="role === 'Customer'">
+      <a routerLink="/my-profile" routerLinkActive="active">
+        <span class="icon">👤</span>
+
+        <span *ngIf="!sidebarCollapsed"> My Profile </span>
+      </a>
+    </li>
   </nav>
 </aside>

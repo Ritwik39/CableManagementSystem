@@ -1,0 +1,141 @@
+<div class="edit-page">
+  <!-- Header -->
+
+  <div class="page-header">
+    <div>
+      <h2>Edit Customer</h2>
+
+      <p>Update customer account and connection details</p>
+    </div>
+
+    <button class="back-btn" type="button" (click)="cancel()">← Back to Customers</button>
+  </div>
+
+  <!-- Loading -->
+
+  <div *ngIf="loading" class="loading">
+    <div class="loader"></div>
+
+    <p>Loading customer details...</p>
+  </div>
+
+  <!-- Form -->
+
+  <div *ngIf="!loading" class="form-card">
+    <div class="form-header">
+      <div class="customer-icon">👤</div>
+
+      <div>
+        <h3>Customer #{{ customer.customerId }}</h3>
+
+        <p>Update the information below</p>
+      </div>
+    </div>
+
+    <!-- Error -->
+
+    <div *ngIf="errorMessage" class="error-message">⚠️ {{ errorMessage }}</div>
+
+    <!-- Success -->
+
+    <div *ngIf="successMessage" class="success-message">✓ {{ successMessage }}</div>
+
+    <!-- Form -->
+
+    <form (ngSubmit)="updateCustomer()" #customerForm="ngForm">
+      <!-- Name -->
+
+      <div class="form-group">
+        <label> Full Name </label>
+
+        <input
+          type="text"
+          name="name"
+          [(ngModel)]="customer.name"
+          placeholder="Enter customer name"
+          required
+        />
+      </div>
+
+      <!-- Mobile -->
+
+      <div class="form-group">
+        <label> Mobile Number </label>
+
+        <input
+          type="text"
+          name="mobile"
+          [(ngModel)]="customer.mobile"
+          placeholder="Enter mobile number"
+          required
+        />
+      </div>
+
+      <!-- Address -->
+
+      <div class="form-group">
+        <label> Address </label>
+
+        <textarea
+          name="address"
+          [(ngModel)]="customer.address"
+          placeholder="Enter customer address"
+          rows="3"
+          required
+        >
+        </textarea>
+      </div>
+
+      <!-- Connection Number -->
+
+      <div class="form-group">
+        <label> Connection Number </label>
+
+        <input
+          type="text"
+          name="connectionNumber"
+          [(ngModel)]="customer.connectionNumber"
+          placeholder="Enter connection number"
+          required
+        />
+      </div>
+
+      <!-- Package -->
+
+      <div class="form-group">
+        <label> Package </label>
+
+        <select name="packageId" [(ngModel)]="customer.packageId" required>
+          <option [ngValue]="0" disabled>Select Package</option>
+
+          <option *ngFor="let package of packages" [ngValue]="package.packageId">
+            {{ package.packageName }}
+            — ₹{{ package.price }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Status -->
+
+      <div class="form-group">
+        <label> Account Status </label>
+
+        <select name="isActive" [(ngModel)]="customer.isActive">
+          <option [ngValue]="true">Active</option>
+
+          <option [ngValue]="false">Inactive</option>
+        </select>
+      </div>
+
+      <!-- Actions -->
+
+      <div class="form-actions">
+        <button type="button" class="cancel-btn" (click)="cancel()">Cancel</button>
+
+        <button type="submit" class="update-btn" [disabled]="saving || customerForm.invalid">
+          {{ saving ? 'Updating...' : 'Update Customer' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

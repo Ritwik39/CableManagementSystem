@@ -1,219 +1,670 @@
-/* ==========================
-   Dashboard Layout
-========================== */
-
-.dashboard-container {
-    padding: 25px;
-    background: #f4f7fb;
-    min-height: calc(100vh - 70px);
-}
+/* =========================================================
+   DASHBOARD PAGE
+========================================================= */
 
 .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
 }
 
 .dashboard-header h2 {
-    margin: 0;
-    color: #1f2937;
-    font-size: 28px;
-    font-weight: 700;
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
 }
 
 .dashboard-header p {
-    margin-top: 6px;
-    color: #6b7280;
+  margin: 6px 0 0;
+  color: #777;
+  font-size: 14px;
 }
 
+/* =========================================================
+   REFRESH BUTTON
+========================================================= */
+
 .refresh-btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    background: #2563eb;
-    color: white;
-    cursor: pointer;
-    font-weight: 600;
-    transition: .3s;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  background: #1f2937;
+  color: white;
+  transition: 0.2s;
 }
 
 .refresh-btn:hover {
-    background: #1d4ed8;
+  background: #111827;
 }
 
-/* ==========================
-   Loading
-========================== */
+.refresh-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
 
 .loading {
-    text-align: center;
-    font-size: 18px;
-    padding: 60px;
-    color: #555;
+  padding: 60px;
+  text-align: center;
+  color: #777;
+  font-size: 15px;
 }
 
-/* ==========================
-   Error
-========================== */
+/* =========================================================
+   ERROR
+========================================================= */
 
 .error-message {
-    background: #fee2e2;
-    color: #dc2626;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+  padding: 18px;
+  border-radius: 10px;
+  background: #fff3f3;
+  border: 1px solid #ffd5d5;
+  color: #c62828;
+  margin-bottom: 20px;
 }
 
-/* ==========================
-   Statistic Cards
-========================== */
+/* =========================================================
+   CUSTOMER DASHBOARD
+========================================================= */
+
+.customer-dashboard {
+  width: 100%;
+}
+
+/* =========================================================
+   CUSTOMER PROFILE HEADER
+========================================================= */
+
+.customer-profile-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  background: white;
+  border-radius: 16px;
+
+  padding: 24px;
+
+  margin-bottom: 20px;
+
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+}
+
+.customer-avatar {
+  width: 68px;
+  height: 68px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #e8f0ff;
+  color: #3157d5;
+
+  font-size: 28px;
+  font-weight: 700;
+
+  flex-shrink: 0;
+}
+
+.customer-profile-info {
+  flex: 1;
+}
+
+.customer-profile-info h2 {
+  margin: 0;
+
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.customer-profile-info p {
+  margin: 5px 0 10px;
+
+  color: #777;
+  font-size: 14px;
+}
+
+/* =========================================================
+   CUSTOMER STATUS
+========================================================= */
+
+.customer-status {
+  display: inline-flex;
+
+  align-items: center;
+  gap: 7px;
+
+  padding: 6px 12px;
+
+  border-radius: 20px;
+
+  background: #e8f8ef;
+
+  color: #21864b;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.customer-status.inactive {
+  background: #fdeaea;
+  color: #c62828;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #22a45d;
+}
+
+.customer-status.inactive .status-dot {
+  background: #d93025;
+}
+
+/* =========================================================
+   VIEW PROFILE BUTTON
+========================================================= */
+
+.view-profile-btn {
+  border: none;
+
+  padding: 10px 18px;
+
+  border-radius: 8px;
+
+  background: #3157d5;
+  color: white;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.view-profile-btn:hover {
+  background: #2445b8;
+}
+
+/* =========================================================
+   CUSTOMER STATISTICS
+========================================================= */
+
+.customer-stats-grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 16px;
+
+  margin-bottom: 22px;
+}
+
+.customer-stat-card {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  background: white;
+
+  border-radius: 12px;
+
+  padding: 18px;
+
+  border: 1px solid #eeeeee;
+
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.customer-stat-icon {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #f3f6fb;
+
+  font-size: 21px;
+
+  flex-shrink: 0;
+}
+
+.customer-stat-card span {
+  display: block;
+
+  font-size: 12px;
+
+  color: #777;
+
+  margin-bottom: 5px;
+}
+
+.customer-stat-card strong {
+  display: block;
+
+  font-size: 16px;
+
+  color: #222;
+}
+
+/* =========================================================
+   CURRENT PACKAGE
+========================================================= */
+
+.customer-package-card {
+  background: white;
+
+  border-radius: 16px;
+
+  padding: 24px;
+
+  margin-bottom: 20px;
+
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+}
+
+.customer-package-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-start;
+
+  margin-bottom: 22px;
+}
+
+.customer-package-header h3 {
+  margin: 0;
+
+  font-size: 19px;
+
+  font-weight: 700;
+}
+
+.customer-package-header p {
+  margin: 5px 0 0;
+
+  color: #777;
+
+  font-size: 13px;
+}
+
+/* =========================================================
+   PACKAGE STATUS
+========================================================= */
+
+.package-status {
+  padding: 6px 13px;
+
+  border-radius: 18px;
+
+  background: #e8f8ef;
+
+  color: #21864b;
+
+  font-size: 12px;
+
+  font-weight: 600;
+}
+
+.package-status.inactive {
+  background: #fdeaea;
+
+  color: #c62828;
+}
+
+/* =========================================================
+   PACKAGE MAIN
+========================================================= */
+
+.package-main {
+  display: flex;
+
+  align-items: center;
+
+  gap: 18px;
+
+  padding: 20px;
+
+  border-radius: 12px;
+
+  background: #f7f9fc;
+
+  margin-bottom: 18px;
+}
+
+.package-icon-large {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: #e8f0ff;
+
+  font-size: 29px;
+}
+
+.package-main h2 {
+  margin: 0;
+
+  font-size: 21px;
+}
+
+.package-main p {
+  margin: 6px 0 0;
+
+  color: #777;
+
+  font-size: 13px;
+}
+
+/* =========================================================
+   PACKAGE BOTTOM DETAILS
+========================================================= */
+
+.package-bottom {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 14px;
+}
+
+.package-bottom > div {
+  padding: 15px;
+
+  border: 1px solid #eeeeee;
+
+  border-radius: 10px;
+}
+
+.package-bottom span {
+  display: block;
+
+  color: #777;
+
+  font-size: 12px;
+
+  margin-bottom: 5px;
+}
+
+.package-bottom strong {
+  font-size: 16px;
+
+  color: #222;
+}
+
+/* =========================================================
+   CUSTOMER ACTION
+========================================================= */
+
+.customer-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  margin-top: 10px;
+}
+
+.customer-action-btn {
+  border: none;
+
+  padding: 11px 20px;
+
+  border-radius: 8px;
+
+  background: #1f2937;
+
+  color: white;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.customer-action-btn:hover {
+  background: #111827;
+}
+
+/* =========================================================
+   ADMIN / EMPLOYEE DASHBOARD
+========================================================= */
 
 .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
-    gap: 20px;
-    margin-bottom: 30px;
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 18px;
+
+  margin-bottom: 24px;
 }
 
 .stat-card {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    color: white;
-    padding: 25px;
-    border-radius: 14px;
-    box-shadow: 0 10px 20px rgba(0,0,0,.08);
-    transition: .3s;
+  display: flex;
+
+  align-items: center;
+
+  gap: 16px;
+
+  background: white;
+
+  border-radius: 14px;
+
+  padding: 22px;
+
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
 }
 
-.stat-card:hover {
-    transform: translateY(-5px);
-}
+.stat-card .icon {
+  width: 50px;
+  height: 50px;
 
-.customers {
-    background: linear-gradient(135deg,#2563eb,#3b82f6);
-}
+  display: flex;
 
-.packages {
-    background: linear-gradient(135deg,#16a34a,#22c55e);
-}
+  align-items: center;
+  justify-content: center;
 
-.payments {
-    background: linear-gradient(135deg,#ea580c,#f97316);
-}
+  border-radius: 12px;
 
-.icon {
-    font-size: 42px;
+  background: #f3f6fb;
+
+  font-size: 24px;
 }
 
 .stat-card h3 {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 500;
+  margin: 0 0 5px;
+
+  font-size: 14px;
+
+  color: #777;
 }
 
 .stat-card h1 {
-    margin-top: 8px;
-    margin-bottom: 0;
-    font-size: 34px;
+  margin: 0;
+
+  font-size: 28px;
 }
 
-/* ==========================
-   Cards
-========================== */
+/* =========================================================
+   COMMON CARDS
+========================================================= */
 
 .card {
-    background: white;
-    border-radius: 14px;
-    padding: 22px;
-    margin-bottom: 25px;
-    box-shadow: 0 8px 18px rgba(0,0,0,.06);
+  background: white;
+
+  border-radius: 14px;
+
+  padding: 22px;
+
+  margin-bottom: 22px;
+
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
 }
 
 .card-header {
-    margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .card-header h3 {
-    margin: 0;
-    color: #1f2937;
+  margin: 0;
+
+  font-size: 18px;
 }
 
-/* ==========================
-   Table
-========================== */
+/* =========================================================
+   TABLE
+========================================================= */
 
 .table-container {
-    overflow-x: auto;
+  width: 100%;
+
+  overflow-x: auto;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-}
+  width: 100%;
 
-thead {
-    background: #2563eb;
-    color: white;
+  border-collapse: collapse;
 }
 
 th,
 td {
-    padding: 14px;
-    text-align: left;
+  padding: 13px 12px;
+
+  text-align: left;
+
+  border-bottom: 1px solid #eeeeee;
+
+  font-size: 13px;
 }
 
-tbody tr:nth-child(even) {
-    background: #f9fafb;
+th {
+  color: #666;
+
+  font-weight: 600;
+
+  background: #fafafa;
 }
 
-tbody tr:hover {
-    background: #eef4ff;
-}
-
-/* ==========================
-   Quick Actions
-========================== */
+/* =========================================================
+   QUICK ACTIONS
+========================================================= */
 
 .actions {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
+  display: flex;
+
+  gap: 12px;
+
+  flex-wrap: wrap;
 }
 
 .action-btn {
-    border: none;
-    padding: 12px 22px;
-    border-radius: 8px;
-    background: #2563eb;
-    color: white;
-    cursor: pointer;
-    font-size: 15px;
-    transition: .3s;
+  border: none;
+
+  padding: 10px 18px;
+
+  border-radius: 8px;
+
+  background: #3157d5;
+
+  color: white;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s;
 }
 
 .action-btn:hover {
-    background: #1d4ed8;
+  background: #2445b8;
 }
 
-/* ==========================
-   Responsive
-========================== */
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
-@media (max-width:768px){
+@media (max-width: 1000px) {
+  .customer-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
-.dashboard-header{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:15px;
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-.stats-grid{
-    grid-template-columns:1fr;
-}
+@media (max-width: 700px) {
+  .dashboard-header {
+    align-items: flex-start;
 
-.action-btn{
-    width:100%;
-}
+    gap: 15px;
+
+    flex-direction: column;
+  }
+
+  .customer-profile-card {
+    align-items: flex-start;
+
+    flex-wrap: wrap;
+  }
+
+  .profile-action {
+    width: 100%;
+  }
+
+  .view-profile-btn {
+    width: 100%;
+  }
+
+  .customer-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .package-bottom {
+    grid-template-columns: 1fr;
+  }
+
+  .package-main {
+    align-items: flex-start;
+  }
+
+  .customer-actions {
+    justify-content: stretch;
+  }
+
+  .customer-action-btn {
+    width: 100%;
+  }
 }

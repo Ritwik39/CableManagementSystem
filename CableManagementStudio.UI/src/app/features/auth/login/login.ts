@@ -10,15 +10,11 @@ import { RegisterRequest } from '../../../core/models/register-request';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
+  imports: [CommonModule, FormsModule],
   templateUrl: './login.html',
-  styleUrl: './login.css'
+  styleUrl: './login.css',
 })
 export class LoginComponent {
-
   // ==========================
   // Tabs
   // ==========================
@@ -62,7 +58,7 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {}
 
   // ==========================
@@ -70,13 +66,11 @@ export class LoginComponent {
   // ==========================
 
   changeTab(tab: 'login' | 'register'): void {
-
     this.selectedTab = tab;
 
     this.loginError = '';
     this.registerError = '';
     this.registerSuccess = '';
-
   }
 
   // ==========================
@@ -84,7 +78,6 @@ export class LoginComponent {
   // ==========================
 
   login(): void {
-
     this.loginError = '';
 
     if (!this.username || !this.password) {
@@ -95,36 +88,28 @@ export class LoginComponent {
     this.loading = true;
 
     const request: LoginRequest = {
-        userName: this.username,
-        password: this.password
-};
+      userName: this.username,
+      password: this.password,
+    };
     this.authService.login(request).subscribe({
-
       next: (response) => {
-
         this.loading = false;
 
         this.authService.saveUser(response);
 
         this.router.navigate(['/dashboard']);
-
       },
 
       error: (error) => {
-
         this.loading = false;
 
         if (error.status === 401) {
           this.loginError = 'Invalid Username or Password';
-        }
-        else {
+        } else {
           this.loginError = 'Unable to connect to server';
         }
-
-      }
-
+      },
     });
-
   }
 
   // ==========================
@@ -132,7 +117,6 @@ export class LoginComponent {
   // ==========================
 
   register(): void {
-
     this.registerError = '';
     this.registerSuccess = '';
 
@@ -156,15 +140,13 @@ export class LoginComponent {
 
     const request: RegisterRequest = {
       fullName: this.fullName,
-      username: this.registerUsername,
+      userName: this.registerUsername,
       email: this.email,
-      password: this.registerPassword
+      password: this.registerPassword,
     };
 
     this.authService.register(request).subscribe({
-
       next: () => {
-
         this.loading = false;
 
         this.registerSuccess = 'Registration Successful.';
@@ -178,24 +160,17 @@ export class LoginComponent {
         setTimeout(() => {
           this.selectedTab = 'login';
         }, 1500);
-
       },
 
       error: (error) => {
-
         this.loading = false;
 
         if (error.error?.message) {
           this.registerError = error.error.message;
-        }
-        else {
+        } else {
           this.registerError = 'Registration Failed.';
         }
-
-      }
-
+      },
     });
-
   }
-
 }

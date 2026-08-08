@@ -1,16 +1,16 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
 import { Customer } from '../models/customer';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CustomerService {
-
   private http = inject(HttpClient);
 
-  private apiUrl = 'https://localhost:5001/api/customer';
+  private apiUrl = 'https://localhost:7177/api/Customer';
 
   getCustomers(): Observable<Customer[]> {
     return this.http.get<Customer[]>(this.apiUrl);
@@ -19,19 +19,19 @@ export class CustomerService {
   getCustomer(id: number): Observable<Customer> {
     return this.http.get<Customer>(`${this.apiUrl}/${id}`);
   }
-
-  addCustomer(customer: Customer): Observable<Customer> {
-    return this.http.post<Customer>(this.apiUrl, customer);
+  getMyProfile(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/my-profile`);
   }
 
-  updateCustomer(customer: Customer): Observable<void> {
-    return this.http.put<void>(
-      `${this.apiUrl}/${customer.customerId}`,
-      customer
-    );
+  addCustomer(customer: Customer): Observable<any> {
+    return this.http.post(this.apiUrl, customer);
   }
 
-  deleteCustomer(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  updateCustomer(customer: Customer): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${customer.customerId}`, customer);
+  }
+
+  deleteCustomer(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

@@ -1,151 +1,97 @@
-<div class="layout-container">
+<!-- Sidebar -->
 
-    <!-- Sidebar -->
+<aside class="sidebar" [class.collapsed]="sidebarCollapsed">
+  <div class="logo">
+    <h2 *ngIf="!sidebarCollapsed">CMS</h2>
 
-    <aside class="sidebar"
-           [class.collapsed]="sidebarCollapsed">
+    <h2 *ngIf="sidebarCollapsed">C</h2>
+  </div>
 
-        <div class="logo">
+  <ul class="menu">
+    <!-- Dashboard -->
 
-            <h2 *ngIf="!sidebarCollapsed">
-                CMS
-            </h2>
+    <li>
+      <a routerLink="/dashboard" routerLinkActive="active">
+        <span class="icon">🏠</span>
 
-            <h2 *ngIf="sidebarCollapsed">
-                C
-            </h2>
+        <span *ngIf="!sidebarCollapsed"> Dashboard </span>
+      </a>
+    </li>
 
-        </div>
+    <!-- My Profile - Customer Only -->
 
-        <ul class="menu">
+    <li *ngIf="role === 'Customer'">
+      <a routerLink="/my-profile" routerLinkActive="active">
+        <span class="icon">👤</span>
 
-            <li>
+        <span *ngIf="!sidebarCollapsed"> My Profile </span>
+      </a>
+    </li>
 
-                <a
-                    routerLink="/dashboard"
-                    routerLinkActive="active">
+    <!-- Customers - Admin / Employee Only -->
 
-                    <span class="icon">🏠</span>
+    <li *ngIf="role === 'Admin' || role === 'Employee'">
+      <a routerLink="/customers" routerLinkActive="active">
+        <span class="icon">👥</span>
 
-                    <span *ngIf="!sidebarCollapsed">
-                        Dashboard
-                    </span>
+        <span *ngIf="!sidebarCollapsed"> Customers </span>
+      </a>
+    </li>
 
-                </a>
+    <!-- Packages - Admin / Employee Only -->
 
-            </li>
+    <li *ngIf="role === 'Admin' || role === 'Employee'">
+      <a routerLink="/packages" routerLinkActive="active">
+        <span class="icon">📦</span>
 
-            <li>
+        <span *ngIf="!sidebarCollapsed"> Packages </span>
+      </a>
+    </li>
 
-                <a
-                    routerLink="/customers"
-                    routerLinkActive="active">
+    <!-- Payments - Admin / Employee Only -->
 
-                    <span class="icon">👥</span>
+    <li *ngIf="role === 'Admin' || role === 'Employee'">
+      <a routerLink="/payments" routerLinkActive="active">
+        <span class="icon">💳</span>
 
-                    <span *ngIf="!sidebarCollapsed">
-                        Customers
-                    </span>
+        <span *ngIf="!sidebarCollapsed"> Payments </span>
+      </a>
+    </li>
+  </ul>
 
-                </a>
+  <!-- Sidebar Footer -->
 
-            </li>
+  <div class="sidebar-footer">
+    <button class="logout-btn" (click)="logout()">
+      🚪
 
-            <li>
+      <span *ngIf="!sidebarCollapsed"> Logout </span>
+    </button>
+  </div>
+</aside>
 
-                <a
-                    routerLink="/packages"
-                    routerLinkActive="active">
+<!-- Main Content -->
 
-                    <span class="icon">📦</span>
+<div class="main-content">
+  <!-- Topbar -->
 
-                    <span *ngIf="!sidebarCollapsed">
-                        Packages
-                    </span>
+  <header class="topbar">
+    <button class="toggle-btn" (click)="toggleSidebar()">☰</button>
 
-                </a>
+    <div class="topbar-title">Cable Management Studio</div>
 
-            </li>
+    <div class="user-info">
+      Welcome,
 
-            <li>
-
-                <a
-                    routerLink="/payments"
-                    routerLinkActive="active">
-
-                    <span class="icon">💳</span>
-
-                    <span *ngIf="!sidebarCollapsed">
-                        Payments
-                    </span>
-
-                </a>
-
-            </li>
-
-        </ul>
-
-        <div class="sidebar-footer">
-
-            <button
-                class="logout-btn"
-                (click)="logout()">
-
-                🚪
-
-                <span *ngIf="!sidebarCollapsed">
-                    Logout
-                </span>
-
-            </button>
-
-        </div>
-
-    </aside>
-
-    <!-- Main Content -->
-
-    <div class="main-content">
-
-        <!-- Topbar -->
-
-        <header class="topbar">
-
-            <button
-                class="toggle-btn"
-                (click)="toggleSidebar()">
-
-                ☰
-
-            </button>
-
-            <div class="topbar-title">
-
-                Cable Management Studio
-
-            </div>
-
-            <div class="user-info">
-
-                Welcome,
-                <strong>
-
-                    {{ fullName || username }}
-
-                    </strong>
-
-            </div>
-
-        </header>
-
-        <!-- Routed Page -->
-
-        <main class="page-content">
-
-            <router-outlet></router-outlet>
-
-        </main>
-
+      <strong>
+        {{ fullName || username }}
+      </strong>
     </div>
+  </header>
 
+  <!-- Routed Page -->
+
+  <main class="page-content">
+    <router-outlet></router-outlet>
+  </main>
 </div>

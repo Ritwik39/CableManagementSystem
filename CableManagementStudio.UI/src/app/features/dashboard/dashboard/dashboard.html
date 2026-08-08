@@ -1,200 +1,318 @@
-<div class="dashboard-container">
+<!-- ============================= -->
+<!-- DASHBOARD HEADER -->
+<!-- ============================= -->
 
-    <div class="dashboard-header">
+<div class="dashboard-header">
+  <div>
+    <h2>My Dashboard</h2>
 
-        <div>
-            <h2>Dashboard</h2>
-            <p>Welcome to Cable Management System</p>
-        </div>
+    <!-- Customer -->
+    <p *ngIf="isCustomer">Welcome back, {{ profile?.name || username }}</p>
 
-        <button class="refresh-btn"
-                (click)="refreshDashboard()">
-            Refresh
-        </button>
+    <!-- Admin / Employee -->
+    <p *ngIf="!isCustomer">Welcome to Cable Management System</p>
+  </div>
 
+  <button class="refresh-btn" (click)="refreshDashboard()" [disabled]="loading">
+    {{ loading ? 'Loading...' : 'Refresh' }}
+  </button>
+</div>
+
+<!-- ============================= -->
+<!-- LOADING -->
+<!-- ============================= -->
+
+<div *ngIf="loading" class="loading">Loading dashboard...</div>
+
+<!-- ============================= -->
+<!-- ERROR -->
+<!-- ============================= -->
+
+<div *ngIf="!loading && errorMessage" class="error-message">
+  {{ errorMessage }}
+</div>
+
+<!-- ===================================================== -->
+<!-- CUSTOMER DASHBOARD -->
+<!-- ===================================================== -->
+
+<div *ngIf="!loading && !errorMessage && isCustomer && profile" class="customer-dashboard">
+  <!-- Customer Profile Card -->
+
+  <div class="customer-profile-card">
+    <div class="customer-avatar">
+      {{ profile.name?.charAt(0)?.toUpperCase() }}
     </div>
 
-    <!-- Loading -->
+    <div class="customer-profile-info">
+      <h2>
+        {{ profile.name }}
+      </h2>
 
-    <div *ngIf="loading" class="loading">
+      <p>Customer</p>
 
-        Loading dashboard...
+      <span class="customer-status" [class.inactive]="!profile.isActive">
+        <span class="status-dot"></span>
 
+        {{ profile.isActive ? 'Active Connection' : 'Inactive Connection' }}
+      </span>
     </div>
 
-    <!-- Error -->
+    <div class="profile-action">
+      <button routerLink="/my-profile" class="view-profile-btn">View My Profile</button>
+    </div>
+  </div>
 
-    <div *ngIf="!loading && errorMessage"
-         class="error-message">
+  <!-- ============================= -->
+  <!-- CUSTOMER STATISTICS -->
+  <!-- ============================= -->
 
-        {{ errorMessage }}
+  <div class="customer-stats-grid">
+    <!-- Connection -->
 
+    <div class="customer-stat-card">
+      <div class="customer-stat-icon">🔌</div>
+
+      <div>
+        <span> Connection Number </span>
+
+        <strong>
+          {{ profile.connectionNumber }}
+        </strong>
+      </div>
     </div>
 
-    <!-- Dashboard -->
+    <!-- Package -->
 
-    <div *ngIf="!loading">
+    <div class="customer-stat-card">
+      <div class="customer-stat-icon">📦</div>
 
-        <!-- Statistics -->
+      <div>
+        <span> Current Package </span>
 
-        <div class="stats-grid">
-
-            <div class="stat-card customers">
-
-                <div class="icon">
-                    👥
-                </div>
-
-                <div>
-
-                    <h3>Total Customers</h3>
-
-                    <h1>{{ totalCustomers }}</h1>
-
-                </div>
-
-            </div>
-
-            <div class="stat-card packages">
-
-                <div class="icon">
-                    📦
-                </div>
-
-                <div>
-
-                    <h3>Total Packages</h3>
-
-                    <h1>{{ totalPackages }}</h1>
-
-                </div>
-
-            </div>
-
-            <div class="stat-card payments">
-
-                <div class="icon">
-                    💳
-                </div>
-
-                <div>
-
-                    <h3>Total Payments</h3>
-
-                    <h1>{{ totalPayments }}</h1>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- Recent Payments -->
-
-        <div class="card">
-
-            <div class="card-header">
-
-                <h3>Recent Payments</h3>
-
-            </div>
-
-            <div class="table-container">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Payment ID</th>
-
-                            <th>Customer</th>
-
-                            <th>Package</th>
-
-                            <th>Amount</th>
-
-                            <th>Payment Date</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        <tr *ngIf="recentPayments.length === 0">
-
-                            <td colspan="5">
-
-                                No payment records found.
-
-                            </td>
-
-                        </tr>
-
-                        <tr *ngFor="let payment of recentPayments">
-
-                            <td>{{ payment.paymentId }}</td>
-
-                            <td>{{ payment.customerName }}</td>
-
-                            <td>{{ payment.packageName }}</td>
-
-                            <td>₹ {{ payment.amount }}</td>
-
-                            <td>{{ payment.paymentDate | date:'dd-MMM-yyyy' }}</td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-        <!-- Quick Actions -->
-
-        <div class="card">
-
-            <div class="card-header">
-
-                <h3>Quick Actions</h3>
-
-            </div>
-
-            <div class="actions">
-
-                <button
-                    class="action-btn"
-                    routerLink="/customers">
-
-                    Add Customer
-
-                </button>
-
-                <button
-                    class="action-btn"
-                    routerLink="/packages">
-
-                    Add Package
-
-                </button>
-
-                <button
-                    class="action-btn"
-                    routerLink="/payments">
-
-                    Add Payment
-
-                </button>
-
-            </div>
-
-        </div>
-
+        <strong>
+          {{ profile.packageName || 'No Package' }}
+        </strong>
+      </div>
     </div>
 
+    <!-- Price -->
+
+    <div class="customer-stat-card">
+      <div class="customer-stat-icon">💰</div>
+
+      <div>
+        <span> Monthly Price </span>
+
+        <strong> ₹{{ profile.price || 0 }} </strong>
+      </div>
+    </div>
+
+    <!-- Speed -->
+
+    <div class="customer-stat-card">
+      <div class="customer-stat-icon">⚡</div>
+
+      <div>
+        <span> Internet Speed </span>
+
+        <strong> {{ profile.speedMbps || 0 }} Mbps </strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- CURRENT PACKAGE -->
+  <!-- ============================= -->
+
+  <div class="customer-package-card">
+    <div class="customer-package-header">
+      <div>
+        <h3>Current Package</h3>
+
+        <p>Your active internet subscription</p>
+      </div>
+
+      <span class="package-status" [class.inactive]="!profile.isActive">
+        {{ profile.isActive ? 'Active' : 'Inactive' }}
+      </span>
+    </div>
+
+    <!-- Package Main -->
+
+    <div class="package-main">
+      <div class="package-icon-large">📦</div>
+
+      <div>
+        <h2>
+          {{ profile.packageName || 'No Package Assigned' }}
+        </h2>
+
+        <p>
+          {{ profile.speedMbps || 0 }}
+          Mbps Internet Connection
+        </p>
+      </div>
+    </div>
+
+    <!-- Package Details -->
+
+    <div class="package-bottom">
+      <div>
+        <span> Monthly Subscription </span>
+
+        <strong> ₹{{ profile.price || 0 }} </strong>
+      </div>
+
+      <div>
+        <span> Connection </span>
+
+        <strong>
+          {{ profile.connectionNumber }}
+        </strong>
+      </div>
+
+      <div>
+        <span> Status </span>
+
+        <strong>
+          {{ profile.isActive ? 'Active' : 'Inactive' }}
+        </strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- CUSTOMER QUICK ACTION -->
+  <!-- ============================= -->
+
+  <div class="customer-actions">
+    <button routerLink="/my-profile" class="customer-action-btn">👤 View My Profile</button>
+  </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- ADMIN / EMPLOYEE DASHBOARD -->
+<!-- ===================================================== -->
+
+<div *ngIf="!loading && !errorMessage && !isCustomer">
+  <!-- ============================= -->
+  <!-- STATISTICS -->
+  <!-- ============================= -->
+
+  <div class="stats-grid">
+    <!-- Customers -->
+
+    <div class="stat-card customers">
+      <div class="icon">👥</div>
+
+      <div>
+        <h3>Total Customers</h3>
+
+        <h1>
+          {{ totalCustomers }}
+        </h1>
+      </div>
+    </div>
+
+    <!-- Packages -->
+
+    <div class="stat-card packages">
+      <div class="icon">📦</div>
+
+      <div>
+        <h3>Total Packages</h3>
+
+        <h1>
+          {{ totalPackages }}
+        </h1>
+      </div>
+    </div>
+
+    <!-- Payments -->
+
+    <div class="stat-card payments">
+      <div class="icon">💳</div>
+
+      <div>
+        <h3>Total Payments</h3>
+
+        <h1>
+          {{ totalPayments }}
+        </h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- RECENT PAYMENTS -->
+  <!-- ============================= -->
+
+  <div class="card">
+    <div class="card-header">
+      <h3>Recent Payments</h3>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Payment ID</th>
+
+            <th>Customer</th>
+
+            <th>Package</th>
+
+            <th>Amount</th>
+
+            <th>Payment Date</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngIf="recentPayments.length === 0">
+            <td colspan="5">No payment records found.</td>
+          </tr>
+
+          <tr *ngFor="let payment of recentPayments">
+            <td>
+              {{ payment.paymentId }}
+            </td>
+
+            <td>
+              {{ payment.customerName }}
+            </td>
+
+            <td>
+              {{ payment.packageName }}
+            </td>
+
+            <td>₹ {{ payment.amount }}</td>
+
+            <td>
+              {{ payment.paymentDate | date: 'dd-MMM-yyyy' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- ADMIN QUICK ACTIONS -->
+  <!-- ============================= -->
+
+  <div class="card">
+    <div class="card-header">
+      <h3>Quick Actions</h3>
+    </div>
+
+    <div class="actions">
+      <button class="action-btn" routerLink="/customers">Add Customer</button>
+
+      <button class="action-btn" routerLink="/packages">Add Package</button>
+
+      <button class="action-btn" routerLink="/payments">Add Payment</button>
+    </div>
+  </div>
 </div>

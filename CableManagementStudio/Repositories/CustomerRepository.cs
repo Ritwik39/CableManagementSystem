@@ -44,7 +44,9 @@ namespace CableManagementStudio.Repositories
             existingCustomer.Mobile = customer.Mobile;
             existingCustomer.Address = customer.Address;
             existingCustomer.ConnectionNumber = customer.ConnectionNumber;
+            existingCustomer.PackageId = customer.PackageId;
             existingCustomer.IsActive = customer.IsActive;
+
 
             await _context.SaveChangesAsync();
             return existingCustomer;
