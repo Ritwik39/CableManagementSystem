@@ -1,0 +1,61 @@
+<div class="package-form-container">
+  <div class="form-header">
+    <div>
+      <h2>Edit Package</h2>
+      <p>Update package information</p>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading Package...</div>
+
+  <form *ngIf="!loading" (ngSubmit)="updatePackage()">
+    <div class="form-group">
+      <label for="packageName"> Package Name </label>
+
+      <input
+        id="packageName"
+        type="text"
+        name="packageName"
+        [(ngModel)]="package.packageName"
+        placeholder="Enter package name"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="price"> Price </label>
+
+      <input
+        id="price"
+        type="number"
+        name="price"
+        [(ngModel)]="package.price"
+        placeholder="Enter package price"
+        min="1"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="speedMbps"> Speed (Mbps) </label>
+
+      <input
+        id="speedMbps"
+        type="number"
+        name="speedMbps"
+        [(ngModel)]="package.speedMbps"
+        placeholder="Enter internet speed"
+        min="1"
+        required
+      />
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="cancel-btn" (click)="cancel()">Cancel</button>
+
+      <button type="submit" class="save-btn" [disabled]="saving">
+        {{ saving ? 'Updating...' : 'Update Package' }}
+      </button>
+    </div>
+  </form>
+</div>

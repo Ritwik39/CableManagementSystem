@@ -1,0 +1,62 @@
+<div class="package-container">
+  <div class="package-header">
+    <div>
+      <h2>Packages</h2>
+      <p>Manage available cable packages</p>
+    </div>
+
+    <button class="add-btn" (click)="addPackage()">+ Add Package</button>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Package Name</th>
+          <th>Price</th>
+          <th>Speed</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <!-- Loading -->
+
+        <tr *ngIf="loading">
+          <td colspan="5" class="loading">Loading Packages...</td>
+        </tr>
+
+        <!-- Package List -->
+
+        <tr *ngFor="let package of packages">
+          <td>
+            {{ package.packageId }}
+          </td>
+
+          <td>
+            <strong>
+              {{ package.packageName }}
+            </strong>
+          </td>
+
+          <td>₹{{ package.price }}</td>
+
+          <td>{{ package.speedMbps }} Mbps</td>
+
+          <td>
+            <button class="edit-btn" (click)="editPackage(package.packageId)">Edit</button>
+
+            <button class="delete-btn" (click)="deletePackage(package.packageId)">Delete</button>
+          </td>
+        </tr>
+
+        <!-- Empty -->
+
+        <tr *ngIf="!loading && packages.length === 0">
+          <td colspan="5" class="empty">No packages found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
