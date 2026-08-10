@@ -1,1 +1,106 @@
-<p>payment-list works!</p>
+<div class="payment-page">
+  <!-- Header -->
+
+  <div class="payment-header">
+    <div>
+      <h2>Payments</h2>
+      <p>View and manage all customer payments</p>
+    </div>
+
+    <div class="header-actions">
+      <button class="refresh-btn" (click)="refreshPayments()" [disabled]="loading">
+        {{ loading ? 'Loading...' : '↻ Refresh' }}
+      </button>
+
+      <button class="add-btn" (click)="addPayment()">+ Add Payment</button>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+
+  <div *ngIf="errorMessage" class="error-message">⚠️ {{ errorMessage }}</div>
+
+  <!-- Loading -->
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="loader"></div>
+    <p>Loading payments...</p>
+  </div>
+
+  <!-- Payment Table -->
+
+  <div *ngIf="!loading && !errorMessage" class="table-card">
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Payment ID</th>
+            <th>Customer</th>
+            <th>Connection</th>
+            <th>Amount</th>
+            <th>Payment Mode</th>
+            <th>Payment Date</th>
+            <th>Status</th>
+            <th>Remarks</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <!-- No Payments -->
+
+          <tr *ngIf="payments.length === 0">
+            <td colspan="8" class="no-data">No payment records found.</td>
+          </tr>
+
+          <!-- Payment Rows -->
+
+          <tr *ngFor="let payment of payments">
+            <td class="payment-id">#{{ payment.paymentId }}</td>
+
+            <td>
+              <div class="customer-info">
+                <div class="customer-avatar">
+                  {{ payment.customer?.name?.charAt(0)?.toUpperCase() || '?' }}
+                </div>
+
+                <strong>
+                  {{ payment.customer?.name || 'N/A' }}
+                </strong>
+              </div>
+            </td>
+
+            <td>
+              {{ payment.customer?.connectionNumber || 'N/A' }}
+            </td>
+
+            <td class="amount">₹{{ payment.amount }}</td>
+
+            <td>
+              <span class="payment-mode">
+                {{ payment.paymentMode }}
+              </span>
+            </td>
+
+            <td>
+              {{ payment.paymentDate | date: 'dd-MMM-yyyy' }}
+            </td>
+
+            <td>
+              <span
+                class="status"
+                [class.paid]="payment.status === 'Paid'"
+                [class.pending]="payment.status === 'Pending'"
+              >
+                {{ payment.status }}
+              </span>
+            </td>
+
+            <td class="remarks">
+              {{ payment.remarks || '-' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

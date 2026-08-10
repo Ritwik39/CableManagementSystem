@@ -78,6 +78,13 @@ export const routes: Routes = [
           import('./features/packages/package-list/package-list').then((m) => m.PackageList),
       },
 
+      //add payments
+      {
+        path: 'payments/add',
+        loadComponent: () =>
+          import('./features/payments/payment-add/payment-add').then((m) => m.PaymentAddComponent),
+      },
+
       // Payments
       {
         path: 'payments',

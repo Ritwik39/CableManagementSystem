@@ -1,0 +1,97 @@
+<div class="payment-add-page">
+  <div class="page-header">
+    <div>
+      <h2>Add Payment</h2>
+      <p>Add a new payment for a customer</p>
+    </div>
+
+    ```
+    <button class="back-btn" type="button" (click)="cancel()">← Back</button>
+    ```
+  </div>
+
+  <!-- Loading Customers -->
+
+  <div *ngIf="loading" class="loading">Loading customers...</div>
+
+  <!-- Error -->
+
+  <div *ngIf="errorMessage" class="error-message">⚠️ {{ errorMessage }}</div>
+
+  <!-- Payment Form -->
+
+  <div *ngIf="!loading" class="payment-form-card">
+    <form (ngSubmit)="addPayment()">
+      <!-- Customer -->
+
+      ```
+      <div class="form-group">
+        <label for="customer">Customer *</label>
+
+        <select id="customer" name="customer" [(ngModel)]="paymentData.customerId">
+          <option [ngValue]="0">Select Customer</option>
+
+          <option *ngFor="let customer of customers" [ngValue]="customer.customerId">
+            {{ customer.name }} - {{ customer.connectionNumber }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Amount -->
+
+      <div class="form-group">
+        <label for="amount">Amount *</label>
+
+        <input
+          id="amount"
+          name="amount"
+          type="number"
+          [(ngModel)]="paymentData.amount"
+          placeholder="Enter payment amount"
+          min="1"
+        />
+      </div>
+
+      <!-- Payment Mode -->
+
+      <div class="form-group">
+        <label for="paymentMode">Payment Mode *</label>
+
+        <select id="paymentMode" name="paymentMode" [(ngModel)]="paymentData.paymentMode">
+          <option value="">Select Payment Mode</option>
+          <option value="Cash">Cash</option>
+          <option value="UPI">UPI</option>
+          <option value="Card">Card</option>
+          <option value="Bank Transfer">Bank Transfer</option>
+        </select>
+      </div>
+
+      <!-- Remarks -->
+
+      <div class="form-group">
+        <label for="remarks">Remarks</label>
+
+        <textarea
+          id="remarks"
+          name="remarks"
+          [(ngModel)]="paymentData.remarks"
+          placeholder="Enter remarks (optional)"
+          rows="4"
+        ></textarea>
+      </div>
+
+      <!-- Actions -->
+
+      <div class="form-actions">
+        <button type="button" class="cancel-btn" (click)="cancel()" [disabled]="submitting">
+          Cancel
+        </button>
+
+        <button type="submit" class="submit-btn" [disabled]="submitting">
+          {{ submitting ? 'Adding Payment...' : 'Add Payment' }}
+        </button>
+      </div>
+    </form>
+    ```
+  </div>
+</div>
