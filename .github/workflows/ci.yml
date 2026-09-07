@@ -1,0 +1,57 @@
+name: Cable Management Studio CI
+
+on:
+  push:
+    branches:
+      - main
+      - Dev
+
+  pull_request:
+    branches:
+      - main
+      - Dev
+
+jobs:
+
+  backend-build:
+    name: Build .NET Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore .NET Dependencies
+        run: dotnet restore CableManagementStudio.slnx
+
+      - name: Build .NET Backend
+        run: dotnet build CableManagementStudio.slnx --configuration Release --no-restore
+
+
+  frontend-build:
+    name: Build Angular Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'CableManagementStudio.UI/package-lock.json'
+
+      - name: Install Angular Dependencies
+        working-directory: CableManagementStudio.UI
+        run: npm ci
+
+      - name: Build Angular Application
+        working-directory: CableManagementStudio.UI
+        run: npm run build
