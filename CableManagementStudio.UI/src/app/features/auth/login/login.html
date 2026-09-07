@@ -126,20 +126,34 @@
 
       <!-- Password -->
       <div class="form-group">
-        <label>Password</label>
+  <label>Password</label>
 
-        <div class="password-box">
-          <input
-            [type]="showLoginPassword ? 'text' : 'password'"
-            placeholder="Enter your password"
-            [(ngModel)]="password"
-          />
+  <div class="password-box">
+    <input
+      [type]="showLoginPassword ? 'text' : 'password'"
+      placeholder="Enter your password"
+      [(ngModel)]="password"
+    />
 
-          <button type="button" class="eye-button" (click)="showLoginPassword = !showLoginPassword">
-            {{ showLoginPassword ? 'Hide' : 'Show' }}
-          </button>
-        </div>
-      </div>
+    <button
+      type="button"
+      class="eye-button"
+      (click)="showLoginPassword = !showLoginPassword"
+    >
+      {{ showLoginPassword ? 'Hide' : 'Show' }}
+    </button>
+  </div>
+
+  <!-- Forgot Password -->
+  <div class="forgot-password">
+    <button
+      type="button"
+      (click)="goToForgotPassword()"
+    >
+      Forgot Password?
+    </button>
+  </div>
+</div>
 
       <!-- Login Error -->
       <div class="error" *ngIf="loginError">

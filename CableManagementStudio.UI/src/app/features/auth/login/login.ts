@@ -66,12 +66,16 @@ export class LoginComponent {
   // ==========================
 
   changeTab(tab: 'login' | 'register'): void {
-    this.selectedTab = tab;
+  this.selectedTab = tab;
 
-    this.loginError = '';
-    this.registerError = '';
-    this.registerSuccess = '';
-  }
+  this.loginError = '';
+  this.registerError = '';
+  this.registerSuccess = '';
+}
+
+goToForgotPassword(): void {
+  this.router.navigate(['/forgot-password']);
+}
 
   // ==========================
   // LOGIN
